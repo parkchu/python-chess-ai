@@ -1,0 +1,13 @@
+import unittest
+from pieces.Pawn import Pawn
+
+
+class PieceTest(unittest.TestCase):
+
+    def makePiece(self):
+        pawn = Pawn("white")
+        self.assertEqual(pawn.team, "white")
+
+
+if __name__ == '__main__':
+    unittest.main()
