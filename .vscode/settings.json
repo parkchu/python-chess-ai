@@ -1,0 +1,10 @@
+{
+    "python.analysis.extraPaths": [
+        "./src/main"
+    ],
+
+    "python.linting.pylintArgs": [
+        "--rcfile",
+        "${workspaceRoot}\\.vscode\\pylint.config"
+    ]
+}

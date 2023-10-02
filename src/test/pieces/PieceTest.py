@@ -1,10 +1,11 @@
 import unittest
+import sys
+print(sys.path)
 from pieces.Pawn import Pawn
-
 
 class PieceTest(unittest.TestCase):
 
-    def makePiece(self):
+    def test_make_piece(self):
         pawn = Pawn("white")
         self.assertEqual(pawn.team, "white")
 
