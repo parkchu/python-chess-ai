@@ -8,6 +8,8 @@ def run_board():
     board = Board()
     print(board.gameboard)
 run_board()
+def run_chess_board()
+    board 
 
 
 
