@@ -1,13 +1,13 @@
 import unittest
 import sys
 sys.path.append("./src/main")
-from pieces.Pawn import Pawn
+from pieces.King import King
 
 class PieceTest(unittest.TestCase):
 
-    def test_make_white_piece(self):
-        pawn = Pawn("white")
-        self.assertEqual(pawn.team, "white")
+    def test_make_white_king(self):
+        king = King("white")
+        self.assertEqual(king.image, "K")
 
 
 if __name__ == '__main__':
