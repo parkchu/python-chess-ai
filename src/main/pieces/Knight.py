@@ -6,6 +6,6 @@ class Knight(Piece):
         self.image = self.setImage()
 
     def setImage(self):
-        if (self.isWhite):
+        if (self.isWhite()):
             return "N"
         return "n"
