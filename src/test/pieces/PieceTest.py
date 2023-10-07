@@ -7,6 +7,7 @@ class PieceTest(unittest.TestCase):
 
     def test_make_white_piece(self):
         pawn = Pawn("white")
+        
         self.assertEqual(pawn.team, "white")
 
 

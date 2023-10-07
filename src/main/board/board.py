@@ -9,32 +9,36 @@ from pieces.NonePiece import NonePiece
 class Board:
 
     def __init__(self):
-        self.gameboard = {}
-        self.mkbaord()
+        self.board = {}
+        self.initBoard()
 
 
-    def mkbaord(self):    
-        placers = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
-    
+    def initBoard(self):
+        for y in reversed(range(0, 8)):
+            for x in range(0, 8):
+                self.board[(x, y)] = NonePiece()
 
-        for i in range(0,8):
-            self.gameboard[(7,i)] = placers[i]("black")
-            self.gameboard[(6,i)] = Pawn("black")
-            for x in range(2, 6):
-                self.gameboard[(x, i)] = NonePiece()
-            self.gameboard[(1,i)] = Pawn("white")
-            self.gameboard[(0,i)] = placers[i]("white")
-
-        self.gameboard = dict(sorted(self.gameboard.items()))
+        self.setPieces()
             
+    def setPieces(self):
+        pieces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+        for i in range(0,8):
+            self.board[(i,7)] = pieces[i]("black")
+            self.board[(i,6)] = Pawn("black")
+            self.board[(i,1)] = Pawn("white")
+            self.board[(i,0)] = pieces[i]("white")
 
     def getBoard(self):
-        board = list(map(self.test, self.gameboard))
+        board = list(map(self.getPieceImage, self.board))
         return self.listChunk(board, 8)
-    
-    def test(self, coordinate):
-        piece = self.gameboard[coordinate]
-        return str(coordinate)
+
+    def getPieceImage(self, coordinate):
+        piece = self.getPiece(coordinate)
+        return piece.image
+
+    def getPiece(self, coordinate):
+        piece = self.board[coordinate]
+        return piece
     
     def listChunk(self, lst, n):
         return [lst[i:i+n] for i in range(0, len(lst), n)]

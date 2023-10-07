@@ -3,10 +3,11 @@ import sys
 sys.path.append("./src/main")
 from pieces.Pawn import Pawn
 
-class PieceTest(unittest.TestCase):
+class PawnTest(unittest.TestCase):
 
     def test_make_white_pawn(self):
         pawn = Pawn("white")
+        
         self.assertEqual(pawn.image, "p")
 
 

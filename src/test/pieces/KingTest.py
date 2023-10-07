@@ -3,10 +3,11 @@ import sys
 sys.path.append("./src/main")
 from pieces.King import King
 
-class PieceTest(unittest.TestCase):
+class KingTest(unittest.TestCase):
 
     def test_make_white_king(self):
         king = King("white")
+        
         self.assertEqual(king.image, "k")
 
 

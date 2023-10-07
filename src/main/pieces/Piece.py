@@ -6,7 +6,10 @@ class Piece:
     def isWhite(self):
         return self.team == "white"
     
+    def isBlack(self):
+        return self.team == "black"
+    
     def setImage(self, image):
-        if (self.isWhite):
-            return image
-        return image.upper()
+        if (self.isBlack()):
+            return image.upper()
+        return image

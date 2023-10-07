@@ -1,4 +1,3 @@
-from pieces.Pawn import Pawn
 from board.board import Board
 
 def run():
