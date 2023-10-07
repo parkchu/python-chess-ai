@@ -1,5 +1,9 @@
 # Python-Chess
 
+## Django
+- codespace 로 웹 서버 띄우기 가능
+- ui 는 html 로 구현
+
 ## Pieces
 - [ ] 자기가 움직일 수 있는 범위인가
 
