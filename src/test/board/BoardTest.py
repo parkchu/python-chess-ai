@@ -1,7 +1,7 @@
 import unittest
 import sys
 sys.path.append("./src/main")
-from board.board import Board
+from board.Board import Board
 
 class BoardTest(unittest.TestCase):
 
