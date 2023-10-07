@@ -10,9 +10,3 @@ def showBoard(board):
         print(" ".join(pieces))
 
 run()
-
-
-
-            
-
-

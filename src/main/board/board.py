@@ -25,7 +25,7 @@ class Board:
             self.gameboard[(1,i)] = Pawn("white")
             self.gameboard[(0,i)] = placers[i]("white")
 
-        self.gameboard = dict(sorted(self.gameboard.items(), reverse=True))  
+        self.gameboard = dict(sorted(self.gameboard.items()))
             
 
     def getBoard(self):
@@ -34,7 +34,7 @@ class Board:
     
     def test(self, coordinate):
         piece = self.gameboard[coordinate]
-        return piece.image
+        return str(coordinate)
     
     def listChunk(self, lst, n):
         return [lst[i:i+n] for i in range(0, len(lst), n)]

@@ -7,7 +7,7 @@ class PieceTest(unittest.TestCase):
 
     def test_make_white_king(self):
         king = King("white")
-        self.assertEqual(king.image, "K")
+        self.assertEqual(king.image, "k")
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ class PieceTest(unittest.TestCase):
 
     def test_make_white_pawn(self):
         pawn = Pawn("white")
-        self.assertEqual(pawn.image, "P")
+        self.assertEqual(pawn.image, "p")
 
 
 if __name__ == '__main__':

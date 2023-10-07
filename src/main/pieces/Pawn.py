@@ -2,10 +2,4 @@ from pieces.Piece import Piece
 
 class Pawn(Piece):
     def __init__(self, team):
-        super().__init__(team)
-        self.image = self.setImage()
-
-    def setImage(self):
-        if (self.isWhite()):
-            return "P"
-        return "p"
+        super().__init__(team, "p")
