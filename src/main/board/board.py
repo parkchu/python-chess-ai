@@ -32,13 +32,18 @@ class Board:
         board = list(map(self.getPieceImage, self.board))
         return self.listChunk(board, 8)
 
-    def getPieceImage(self, coordinate):
-        piece = self.getPiece(coordinate)
+    def getPieceImage(self, position):
+        piece = self.getPiece(position)
         return piece.image
 
-    def getPiece(self, coordinate):
-        piece = self.board[coordinate]
+    def getPiece(self, position):
+        piece = self.board[position]
         return piece
     
     def listChunk(self, lst, n):
         return [lst[i:i+n] for i in range(0, len(lst), n)]
+    
+    def move(self, currentPosition, targetPositon):
+        currentPiece = self.board[currentPosition]
+        self.board[currentPosition] = NonePiece()
+        self.board[targetPositon] = currentPiece
