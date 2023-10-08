@@ -1,4 +1,4 @@
-from pieces.Piece import Piece
+from .Piece import Piece
 
 class NonePiece(Piece):
     def __init__(self):

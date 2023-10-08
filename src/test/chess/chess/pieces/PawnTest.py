@@ -1,6 +1,6 @@
 import unittest
 import sys
-sys.path.append("./src/main")
+sys.path.append("./src/main/chess")
 from pieces.Pawn import Pawn
 
 class PawnTest(unittest.TestCase):

@@ -1,6 +1,6 @@
 import unittest
 import sys
-sys.path.append("./src/main")
+sys.path.append("./src/main/chess/chess")
 from pieces.King import King
 
 class KingTest(unittest.TestCase):
