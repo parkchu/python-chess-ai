@@ -1,6 +1,6 @@
 import unittest
 import sys
-sys.path.append("./src/main")
+sys.path.append("./src/main/chess/chess")
 from board.Board import Board
 
 class BoardTest(unittest.TestCase):
