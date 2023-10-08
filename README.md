@@ -31,6 +31,6 @@
 - [ ] 임시로 아래 코드를 모든 테스트 파일에 작성하여 해결함
 ``` 
 import sys
-sys.path.append("./src/main")
+sys.path.append("./src/main/chess/chess")
 ```
 - [ ] 추후 리펙토링 필요

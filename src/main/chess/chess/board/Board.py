@@ -1,10 +1,10 @@
-from pieces.Pawn import Pawn
-from pieces.Rook import Rook
-from pieces.Bishop import Bishop
-from pieces.Knight import Knight
-from pieces.King import King
-from pieces.Queen import Queen
-from pieces.NonePiece import NonePiece
+from ..pieces.Pawn import Pawn
+from ..pieces.Rook import Rook
+from ..pieces.Bishop import Bishop
+from ..pieces.Knight import Knight
+from ..pieces.King import King
+from ..pieces.Queen import Queen
+from ..pieces.NonePiece import NonePiece
 
 class Board:
 
@@ -14,19 +14,21 @@ class Board:
 
 
     def initBoard(self):
-        for y in reversed(range(0, 8)):
-            for x in range(0, 8):
-                self.board[(x, y)] = NonePiece()
+        files = [chr(x) for x in range(97, 105)]
+        for y in reversed(range(1, 9)):
+            for x in files:
+                self.board["{}{}".format(x, y)] = NonePiece()
 
         self.setPieces()
             
     def setPieces(self):
+        files = [chr(x) for x in range(97, 105)]
         pieces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
         for i in range(0,8):
-            self.board[(i,7)] = pieces[i]("black")
-            self.board[(i,6)] = Pawn("black")
-            self.board[(i,1)] = Pawn("white")
-            self.board[(i,0)] = pieces[i]("white")
+            self.board["{}8".format(files[i])] = pieces[i]("black")
+            self.board["{}7".format(files[i])] = Pawn("black")
+            self.board["{}2".format(files[i])] = Pawn("white")
+            self.board["{}1".format(files[i])] = pieces[i]("white")
 
     def getBoard(self):
         board = list(map(self.getPieceImage, self.board))
@@ -43,7 +45,7 @@ class Board:
     def listChunk(self, lst, n):
         return [lst[i:i+n] for i in range(0, len(lst), n)]
     
-    def move(self, currentPosition, targetPositon):
+    def move(self, currentPosition, targetPosition):
         currentPiece = self.board[currentPosition]
         self.board[currentPosition] = NonePiece()
-        self.board[targetPositon] = currentPiece
+        self.board[targetPosition] = currentPiece
