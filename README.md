@@ -1,14 +1,36 @@
 # Python-Chess
 
+## 실행 전 사전 작업
+- `(python-chesss-ai 디렉토리가 위치한 경로)/python-chess-ai/src/main` 를 PYTHONPATH 환경변수로 설정해야 합니다.
+
+Linux:
+```
+export PYTHONPATH='(python-chesss-ai 디렉토리가 위치한 경로)/python-chess-ai/src/main'
+```
+
+- 해당 명령어를 통해 `django` 와 `rest_framework` 를 설치해주세요.
+```
+pip install django
+pip install rest_framework
+```
+
+- 다음과 같이 `alias` 를 설정해주면 간편하게 코드를 실행 시킬 수 있어요.
+```
+alias pyma='python src/main/server/manage.py'
+alias pyrun='python src/main/chess/main.py'
+alias pytest='python -m unittest -v src/test/*/*/*Test.py'
+```
+
+- 서버를 처음 띄울땐 해당 명령어를 입력해주세요.
+```
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+```
+
 ## Django
 - codespace 로 웹 서버 띄우기 가능
 - ui 는 html 로 구현
-
-### 변경사항 생겼을시
-```
-python manage.py migrate
-python runserver
-```
 
 ## Pieces
 - [ ] 자기가 움직일 수 있는 범위인가
