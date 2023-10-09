@@ -21,5 +21,5 @@ def movePiece(request):
         targetPosition = Screen.checkPosition(serializer.data["targetPosition"])
         board.move(currentPosition, targetPosition)
         Screen.showBoard(board)
-        return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.data, status=200)
     return JsonResponse(serializer.errors, status=400)
