@@ -1,20 +1,18 @@
 import unittest
-import sys
-sys.path.append("./src/main/chess/chess")
-from board.Board import Board
+from chess.board.Board import Board
 
 class BoardTest(unittest.TestCase):
 
     def test_init_board(self):
         board = Board()
 
-        piece = board.getPiece((0, 7))
+        piece = board.getPiece("a8")
         self.assertEqual(piece.image, "R")
 
     def test_move_piece(self):
         board = Board()
-        currentPositon = (0, 1)
-        targetPosition = (0, 2)
+        currentPositon = "a2"
+        targetPosition = "a3"
         currentPiece = board.getPiece(currentPositon)
 
         board.move(currentPositon, targetPosition)

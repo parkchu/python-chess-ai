@@ -1,10 +1,10 @@
-from ..pieces.Pawn import Pawn
-from ..pieces.Rook import Rook
-from ..pieces.Bishop import Bishop
-from ..pieces.Knight import Knight
-from ..pieces.King import King
-from ..pieces.Queen import Queen
-from ..pieces.NonePiece import NonePiece
+from chess.pieces.Pawn import Pawn
+from chess.pieces.Rook import Rook
+from chess.pieces.Bishop import Bishop
+from chess.pieces.Knight import Knight
+from chess.pieces.King import King
+from chess.pieces.Queen import Queen
+from chess.pieces.NonePiece import NonePiece
 
 class Board:
 

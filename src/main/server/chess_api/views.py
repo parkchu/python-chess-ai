@@ -3,8 +3,8 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from .serializers import PositionsSerializer
 from rest_framework.parsers import JSONParser
-from .chess.board.Board import Board
-from .chess.screen.Screen import Screen
+from chess.board.Board import Board
+from chess.screen.Screen import Screen
 
 board = Board()
 
