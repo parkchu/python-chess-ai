@@ -1,7 +1,7 @@
 # Python-Chess
 
 ## 실행 전 사전 작업
-- `(python-chesss-ai 디렉토리가 위치한 경로)/python-chess-ai/src/main` 를 PYTHONPATH 환경변수로 설정해야 합니다.
+- `/python-chess-ai/src/main` 를 PYTHONPATH 환경변수로 설정해야 합니다.
 
 Linux:
 ```
