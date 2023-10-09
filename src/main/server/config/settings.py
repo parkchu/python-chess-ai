@@ -36,8 +36,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "chess_api",
     "rest_framework",
+    "chess_api",
+    "home",
 ]
 
 MIDDLEWARE = [

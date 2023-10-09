@@ -53,7 +53,7 @@ function movePiece(targetPoint) {
 }
 
 function requestMove(currentPosition, targetPosition) {
-    fetch(`${APIURL}/api/move`, {
+    fetch(`${APIURL}/api/chess/move`, {
         method: "POST", 
         headers: { 
             "Content-Type": "application/json",
