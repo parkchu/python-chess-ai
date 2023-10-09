@@ -9,33 +9,47 @@ function init() {
 function clickBoard(event) {
     event.preventDefault();
     targetPoint = event.target.parentElement;
-    console.log(event.target.getAttribute("data-team"))
-    if (currentPoint == null) {
-        if (event.target.innerText != "") {
-            currentPoint = targetPoint;
-        } else {
-            currentPoint = null;
-        }
-        return ;
-    }
+    getFunction(targetPoint)(targetPoint)
+}
+
+function getFunction(targetPoint) {
     if (currentPoint == targetPoint) {
-        currentPoint = null;
-        removeClicked(event.target);
-        return ;
+        return removeClicked;
     }
-    currentPiece = currentPoint.children[0];
-    if (currentPiece.getAttribute("data-team") === event.target.getAttribute("data-team")) {
-        currentPoint = targetPoint;
-        return ;
+    if (currentPoint == null || isSameTeam(currentPoint, targetPoint)) {
+        return setCurrentPoint;
     }
-    if (currentPoint != null) {
-        requestMove(currentPoint.id, targetPoint.id);
-        targetPoint.innerHTML = currentPoint.innerHTML;
-        currentPoint.innerHTML = makeEmptyPiece();
-        currentPoint = null;
-        removeClicked(event.target);
-        return ;
+    return movePiece;
+}
+
+function isSameTeam(currentPoint, targetPoint) {
+    return currentPoint.children[0].getAttribute("data-team") === targetPoint.children[0].getAttribute("data-team");
+}
+
+function setCurrentPoint(targetPoint) {
+    currentPoint = getNonemptyPoint(targetPoint);
+}
+
+function getNonemptyPoint(targetPoint) {
+    targetPiece = targetPoint.children[0];
+    if (targetPiece.innerText == "") {
+        return null;
     }
+    return targetPoint;
+}
+
+function removeClicked(targetPoint) {
+    elementA = targetPoint.children[0];
+    elementA.removeAttribute("href");
+    elementA.setAttribute("href", "");
+    currentPoint = null;
+}
+
+function movePiece(targetPoint) {
+    requestMove(currentPoint.id, targetPoint.id);
+    targetPoint.innerHTML = currentPoint.innerHTML;
+    currentPoint.innerHTML = makeEmptyPiece();
+    removeClicked(targetPoint);
 }
 
 function requestMove(currentPosition, targetPosition) {
@@ -55,11 +69,6 @@ function requestMove(currentPosition, targetPosition) {
 
 function makeEmptyPiece() {
     return '<a href=""></a>'
-}
-
-function removeClicked(elementA) {
-    elementA.removeAttribute("href");
-    elementA.setAttribute("href", "");
 }
 
 init();
