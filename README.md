@@ -28,6 +28,17 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+## 용어 사전
+|용어|종류|설명|
+|---|---|------|
+|Piece|클래스|체스 기물들의 기본이 되는 데이터를 가지는 객체|
+|NonePiece|클래스|체스 기물이 없는 위치를 나타내기 위한 객체|
+|Board|클래스|체스 기물들이 움직이는 장소|
+|Screen|클래스|Board 를 화면에 출력해주거나 기물을 움직이기 위해 입력한 값을 받아오는 객체|
+|config|디렉토리|django 에 대해 설정하는 디렉토리|
+|home|디렉토리|체스 게임을 할 수 있게 html 을 띄워주는 웹 서버|
+|chess_api|디렉토리|체스 게임을 돌리며 데이터를 주고 받는 api 서버|
+
 ## Django
 - codespace 로 웹 서버 띄우기 가능
 - ui 는 html 로 구현
