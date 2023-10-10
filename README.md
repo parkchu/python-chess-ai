@@ -11,7 +11,7 @@ export PYTHONPATH='(python-chesss-ai 디렉토리가 위치한 경로)/python-ch
 - 해당 명령어를 통해 `django` 와 `rest_framework` 를 설치해주세요.
 ```
 pip install django
-pip install rest_framework
+pip install djangorestframework
 ```
 
 - 다음과 같이 `alias` 를 설정해주면 간편하게 코드를 실행 시킬 수 있어요.
