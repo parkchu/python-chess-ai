@@ -1,4 +1,4 @@
-const APIURL = "https://glorious-fortnight-5xxrx7jrp7h6rg-8000.app.github.dev"
+const APIURL = "https://effective-spork-wr76pqqq7vvw2g66r-8000.app.github.dev/"
 var currentPoint = null
 
 function init() {
@@ -22,12 +22,22 @@ function getFunction(targetPoint) {
     return movePiece;
 }
 
+function removeClicked(targetPoint) {
+    elementA = targetPoint.children[0];
+    elementA.removeAttribute("href");
+    elementA.setAttribute("href", "");
+    currentPoint = null;
+}
+
 function isSameTeam(currentPoint, targetPoint) {
     return currentPoint.children[0].getAttribute("data-team") === targetPoint.children[0].getAttribute("data-team");
 }
 
 function setCurrentPoint(targetPoint) {
     currentPoint = getNonemptyPoint(targetPoint);
+    if (currentPoint != null) {
+
+    }
 }
 
 function getNonemptyPoint(targetPoint) {
@@ -38,11 +48,10 @@ function getNonemptyPoint(targetPoint) {
     return targetPoint;
 }
 
-function removeClicked(targetPoint) {
-    elementA = targetPoint.children[0];
-    elementA.removeAttribute("href");
-    elementA.setAttribute("href", "");
-    currentPoint = null;
+function requestGetMovablePoints() {
+    url = ``;
+    method = "GET";
+    request(url, body);
 }
 
 function movePiece(targetPoint) {
@@ -53,22 +62,29 @@ function movePiece(targetPoint) {
 }
 
 function requestMove(currentPosition, targetPosition) {
-    fetch(`${APIURL}/api/chess/move`, {
-        method: "POST", 
+    url = `${APIURL}/api/chess/move`;
+    method = "POST";
+    body = JSON.stringify({
+        currentPosition: currentPosition,
+        targetPosition: targetPosition,
+    });
+    request(url, method, body)
+    .then((response) => response.json())
+    .then((data) => console.log(data));
+}
+
+function request(url, method, body = null) {
+    return fetch(url, {
+        method: method, 
         headers: { 
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-        currentPosition: currentPosition,
-        targetPosition: targetPosition,
-        }),
-    })
-    .then((response) => response.json())
-    .then((data) => console.log(data))
+        body: body
+    });
 }
 
 function makeEmptyPiece() {
-    return '<a href=""></a>'
+    return '<a href=""></a>';
 }
 
 init();
