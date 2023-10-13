@@ -13,3 +13,6 @@ class Piece:
         if (self.isBlack()):
             return image.upper()
         return image
+    
+    def getMovablePositions(self, position):
+        return []

@@ -49,3 +49,10 @@ class Board:
         currentPiece = self.board[currentPosition]
         self.board[currentPosition] = NonePiece()
         self.board[targetPosition] = currentPiece
+
+    def getMovablePositions(self, position):
+        piece = self.board[position]
+        if (piece.team == None):
+            return []
+        
+        return []

@@ -21,8 +21,8 @@ class Screen:
         if (len(positionString) != 2):
             raise Exception()
         x = positionString[0]
-        y = int(positionString[1])
-        if ('a' <= x <= 'h' and 1 <= y <= 8):
+        y = positionString[1]
+        if ('a' <= x <= 'h' and '1' <= y <= '8'):
             return positionString
         raise Exception()
     

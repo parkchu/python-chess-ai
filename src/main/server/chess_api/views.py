@@ -17,3 +17,8 @@ def movePiece(request):
         Screen.showBoard(board)
         return JsonResponse(serializer.data, status=200)
     return JsonResponse(serializer.errors, status=400)
+
+@api_view(['GET'])
+def getMovablePositions(request, position):
+    positions = board.getMovablePositions(position)
+    return JsonResponse(positions, safe=False, status=200)
