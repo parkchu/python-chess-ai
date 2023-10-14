@@ -42,6 +42,18 @@ class BoardTest(unittest.TestCase):
 
         movablePositions = ["a4"]
         self.assertEqual(positions, movablePositions)
+
+    
+    def test_get_movable_positions_rook(self):
+        board = Board()
+        pawnPosition = "a2"
+        rookPosition = "a1"
+        board.move(pawnPosition, "a4")
+
+        positions = board.getMovablePositions(rookPosition)
+
+        movablePositions = ["a2", "a3"]
+        self.assertEqual(positions, movablePositions)
     
 
 if __name__ == '__main__':

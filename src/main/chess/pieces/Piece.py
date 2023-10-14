@@ -23,6 +23,10 @@ class Piece:
         return self.team != piece.team
     
 
+    def isIt(self, pieceType):
+        return type(self) is pieceType
+    
+
     def setImage(self, image):
         if (self.isBlack()):
             return image.upper()

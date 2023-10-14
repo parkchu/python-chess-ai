@@ -15,7 +15,7 @@ class PawnTest(unittest.TestCase):
 
         positions = pawn.getMovablePositions(position)
 
-        self.assertEqual(positions, ["b3", "a3", "c3", "b4"])
+        self.assertEqual(positions, [["b3"], ["a3"], ["c3"], ["b4"]])
 
 
     def test_get_out_of_range_position(self):
@@ -24,7 +24,7 @@ class PawnTest(unittest.TestCase):
 
         positions = pawn.getMovablePositions(position)
 
-        self.assertEqual(positions, ["a3", "b3", "a4"])
+        self.assertEqual(positions, [["a3"], ["b3"], ["a4"]])
 
     
     def test_get_movable_positions_black(self):
@@ -33,7 +33,7 @@ class PawnTest(unittest.TestCase):
 
         positions = pawn.getMovablePositions(position)
 
-        self.assertEqual(positions, ["b6", "a6", "c6", "b5"])
+        self.assertEqual(positions, [["b6"], ["a6"], ["c6"], ["b5"]])
 
 
     def test_already_move(self):
@@ -43,7 +43,7 @@ class PawnTest(unittest.TestCase):
 
         positions = pawn.getMovablePositions(position)
 
-        self.assertEqual(positions, ["b4", "a4", "c4"])
+        self.assertEqual(positions, [["b4"], ["a4"], ["c4"]])
 
 
 if __name__ == '__main__':

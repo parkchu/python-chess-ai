@@ -22,7 +22,7 @@ class Pawn(Piece):
         for distance in distances:
             movingPosition = chr(ord(position[0]) + distance[0]) + chr(ord(position[1]) + distance[1])
             availablePosition = self.getAvailablePosition(movingPosition)
-            (positions.append(availablePosition) if availablePosition is not None else None)
+            (positions.append([availablePosition]) if availablePosition is not None else None)
 
         return positions
         
