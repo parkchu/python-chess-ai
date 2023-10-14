@@ -19,7 +19,11 @@ function getFunction(targetPoint) {
     if (currentPoint == null || isSameTeam(currentPoint, targetPoint)) {
         return setCurrentPoint;
     }
-    return movePiece;
+    if (getPieceAttribute(targetPoint, "data-movable")) {
+        return movePiece;
+    }
+    deleteMovablePoints();
+    return setCurrentPoint;
 }
 
 function removeClicked(targetPoint) {
@@ -31,7 +35,7 @@ function removeClicked(targetPoint) {
 }
 
 function isSameTeam(currentPoint, targetPoint) {
-    return currentPoint.children[0].getAttribute("data-team") === targetPoint.children[0].getAttribute("data-team");
+    return getPieceAttribute(currentPoint, "data-team") === getPieceAttribute(targetPoint, "data-team");
 }
 
 function setCurrentPoint(targetPoint) {
@@ -61,16 +65,44 @@ function showMovablePoints(positions) {
     deleteMovablePoints();
     console.log(positions);
     positions.forEach(position => {
-        point = board.querySelector(`#${position}`);
-        point.innerHTML = '<a href="" data-movable="true">&#9900;</a>';
+        showMovablePoint(position);
     });
 }
 
+function showMovablePoint(position) {
+    point = board.querySelector(`#${position}`);
+    if (isEmptyPiece(point)) {
+        point.innerHTML = '<a href="" data-movable="true">&#9900;</a>';
+    } else {
+        piece = point.children[0]
+        piece.classList.add("highlight");
+        piece.setAttribute("data-movable", "true");
+    }
+}
+
+function isEmptyPiece(point) {
+    return getPieceAttribute(point, "data-team") == null;
+}
+
+function getPieceAttribute(point, attribute) {
+    return point.children[0].getAttribute(attribute);
+}
+
 function deleteMovablePoints() {
-    points = board.querySelectorAll("a[data-movable='true']");
-    Array.from(points).forEach(point => {
-        point.innerHTML = makeEmptyPiece();
+    pieces = board.querySelectorAll("a[data-movable=true], a.highlight");
+    Array.from(pieces).forEach(piece => {
+        deleteMovablePoint(piece);
     });
+}
+
+function deleteMovablePoint(piece) {
+    point = piece.parentElement;
+    if (isEmptyPiece(point)) {
+        point.innerHTML = makeEmptyPiece();
+    } else {
+        piece.classList.remove("highlight");
+        piece.removeAttribute("data-movable");
+    }
 }
 
 function movePiece(targetPoint) {
