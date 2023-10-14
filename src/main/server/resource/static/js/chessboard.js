@@ -1,15 +1,19 @@
-const APIURL = "https://effective-spork-wr76pqqq7vvw2g66r-8000.app.github.dev/"
+const APIURL = "https://effective-spork-wr76pqqq7vvw2g66r-8000.app.github.dev/";
 const board = document.querySelector("#boards tbody");
-var currentPoint = null
+const turnLabel = document.querySelector("h1.turn");
+var currentPoint
+var turn
 
 function init() {
+    currentPoint = null;
+    turn = "white"
     board.addEventListener("click", clickBoard);
 }
 
 function clickBoard(event) {
     event.preventDefault();
     targetPoint = event.target.parentElement;
-    getFunction(targetPoint)(targetPoint)
+    getFunction(targetPoint)(targetPoint);
 }
 
 function getFunction(targetPoint) {
@@ -19,7 +23,7 @@ function getFunction(targetPoint) {
     if (currentPoint == null || isSameTeam(currentPoint, targetPoint)) {
         return setCurrentPoint;
     }
-    if (getPieceAttribute(targetPoint, "data-movable")) {
+    if (getPieceAttribute(targetPoint, "data-movable") && isTurn(currentPoint)) {
         return movePiece;
     }
     deleteMovablePoints();
@@ -74,7 +78,7 @@ function showMovablePoint(position) {
     if (isEmptyPiece(point)) {
         point.innerHTML = '<a href="" data-movable="true">&#9900;</a>';
     } else {
-        piece = point.children[0]
+        piece = point.children[0];
         piece.classList.add("highlight");
         piece.setAttribute("data-movable", "true");
     }
@@ -86,6 +90,10 @@ function isEmptyPiece(point) {
 
 function getPieceAttribute(point, attribute) {
     return point.children[0].getAttribute(attribute);
+}
+
+function isTurn(currentPoint) {
+    return getPieceAttribute(currentPoint, "data-team") === turn
 }
 
 function deleteMovablePoints() {
@@ -110,6 +118,7 @@ function movePiece(targetPoint) {
     targetPoint.innerHTML = currentPoint.innerHTML;
     currentPoint.innerHTML = makeEmptyPiece();
     removeClicked(targetPoint);
+    changeTurn();
 }
 
 function requestMove(currentPosition, targetPosition) {
@@ -136,6 +145,16 @@ function request(url, method, body = null) {
 
 function makeEmptyPiece() {
     return '<a href=""></a>';
+}
+
+function changeTurn() {
+    if (turn === "white") {
+        turn = "black";
+        turnLabel.innerHTML = '<span class="label label-default turn">흑이 둘 차례</span>';
+    } else { 
+        turn = "white";
+        turnLabel.innerHTML = '<span class="label label-default turn">백이 둘 차례</span>';
+    }
 }
 
 init();
