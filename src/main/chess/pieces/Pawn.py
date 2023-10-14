@@ -32,6 +32,7 @@ class Pawn(Piece):
             return (0, 2)
         return (0, -2)
 
+
     def getAvailablePosition(self, position):
         x = position[0]
         y = position[1]

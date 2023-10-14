@@ -12,6 +12,16 @@ class Piece:
     def isBlack(self):
         return self.team == "black"
     
+    
+    def isNone(self):
+        return self.team == None
+    
+
+    def isEnemy(self, piece):
+        if (self.isNone() or piece.isNone()):
+            return False
+        return self.team != piece.team
+    
 
     def setImage(self, image):
         if (self.isBlack()):

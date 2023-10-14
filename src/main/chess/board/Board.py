@@ -52,15 +52,35 @@ class Board:
     
 
     def move(self, currentPosition, targetPosition):
+        if (not self.canMove(currentPosition, targetPosition)):
+            raise Exception("움직일 수 없는 위치 입니다.")
         currentPiece = self.board[currentPosition]
         self.board[currentPosition] = NonePiece()
         self.board[targetPosition] = currentPiece
         currentPiece.move()
 
 
+    def canMove(self, currentPosition, targetPosition):
+        movablePositions = self.getMovablePositions(currentPosition)
+        return targetPosition in movablePositions
+
+
     def getMovablePositions(self, position):
+        positions = []
         piece = self.board[position]
-        if (piece.team == None):
-            return []
+
+        if (piece.isNone()):
+            return positions
         
-        return piece.getMovablePositions(position)
+        movablePositions = piece.getMovablePositions(position)
+        for movablePosition in movablePositions:
+            (positions.append(movablePosition) if self.checkMovablePawn(position, movablePosition) else None) 
+        return positions
+
+    
+    def checkMovablePawn(self, currentPosition, targetPosition):
+        currentPiece = self.board[currentPosition]
+        targetPiece = self.board[targetPosition]
+        if (currentPosition[0] == targetPosition[0]):
+            return targetPiece.isNone()
+        return targetPiece.isEnemy(currentPiece)

@@ -9,6 +9,7 @@ class BoardTest(unittest.TestCase):
         piece = board.getPiece("a8")
         self.assertEqual(piece.image, "R")
 
+
     def test_move_piece(self):
         board = Board()
         currentPositon = "a2"
@@ -19,6 +20,28 @@ class BoardTest(unittest.TestCase):
 
         targetPiece = board.getPiece(targetPosition)
         self.assertEqual(currentPiece, targetPiece)
+
+
+    def test_get_movable_positions(self):
+        board = Board()
+        pawnPosition = "a2"
+
+        positions = board.getMovablePositions(pawnPosition)
+
+        movablePositions = ["a3", "a4"]
+        self.assertEqual(positions, movablePositions)
+
+
+    def test_get_movable_positions_already_move_pawn(self):
+        board = Board()
+        currentPositon = "a2"
+        targetPosition = "a3"
+        board.move(currentPositon, targetPosition)
+
+        positions = board.getMovablePositions(targetPosition)
+
+        movablePositions = ["a4"]
+        self.assertEqual(positions, movablePositions)
     
 
 if __name__ == '__main__':
