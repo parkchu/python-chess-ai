@@ -9,7 +9,7 @@ class BishopTest(unittest.TestCase):
 
         positions = bishop.getMovablePositions(position)
 
-        self.assertEqual(positions, [["d5", "c6", "b7", "a8"], ["f5", 'g6', 'h7'], ['f3', 'g2', 'h1'], ['d3', 'c2', 'b1']])
+        self.assertEqual(positions, ["a8", 'h7', 'h1', 'b1'])
 
 
 if __name__ == '__main__':

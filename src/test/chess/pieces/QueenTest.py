@@ -9,7 +9,7 @@ class QueenTest(unittest.TestCase):
 
         positions = queen.getMovablePositions(position)
 
-        self.assertEqual(positions, [["d5", "c6", "b7", "a8"], ["e5", "e6", "e7", "e8"], ["f5", 'g6', 'h7'], ['f4', 'g4', 'h4'], ['f3', 'g2', 'h1'], ['e3', 'e2', 'e1'], ['d3', 'c2', 'b1'], ['d4', 'c4', 'b4', 'a4']])
+        self.assertEqual(positions, ["a8", "e8", 'h7', 'h4', 'h1', 'e1', 'b1', 'a4'])
 
 
 if __name__ == '__main__':

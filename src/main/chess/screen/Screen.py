@@ -1,3 +1,5 @@
+from chess.board.Position import Position
+
 class Screen:
 
     def showBoard(board):
@@ -22,9 +24,9 @@ class Screen:
     def checkPosition(positionString):
         if (len(positionString) != 2):
             raise Exception()
-        x = positionString[0]
-        y = positionString[1]
-        if ('a' <= x <= 'h' and '1' <= y <= '8'):
-            return positionString
+        file = positionString[0]
+        rank = positionString[1]
+        if ('a' <= file <= 'h' and '1' <= rank <= '8'):
+            return Position(file, rank)
         raise Exception()
     

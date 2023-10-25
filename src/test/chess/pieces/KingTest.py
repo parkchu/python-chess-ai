@@ -15,7 +15,7 @@ class KingTest(unittest.TestCase):
 
         positions = king.getMovablePositions(position)
 
-        self.assertEqual(positions, [["d5"], ["e5"], ["f5"], ["f4"], ['f3'], ['e3'], ['d3'], ['d4']])
+        self.assertEqual(positions, ["d5", "e5", "f5", "f4", 'f3', 'e3', 'd3', 'd4'])
 
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ class RookTest(unittest.TestCase):
 
         positions = rook.getMovablePositions(position)
 
-        self.assertEqual(positions, [["e5", "e6", "e7", "e8"], ['f4', 'g4', 'h4'], ['e3', 'e2', 'e1'], ['d4', 'c4', 'b4', 'a4']])
+        self.assertEqual(positions, ["e8", 'h4', 'e1', 'a4'])
 
 
 if __name__ == '__main__':

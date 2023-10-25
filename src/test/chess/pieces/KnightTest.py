@@ -9,7 +9,7 @@ class KnightTest(unittest.TestCase):
 
         positions = knight.getMovablePositions(position)
 
-        self.assertEqual(positions, [["d6"], ["f6"], ["g5"], ["g3"], ['f2'], ['d2'], ['c3'], ['c5']])
+        self.assertEqual(positions, ["d6", "f6", "g5", "g3", 'f2', 'd2', 'c3', 'c5'])
 
 
 if __name__ == '__main__':

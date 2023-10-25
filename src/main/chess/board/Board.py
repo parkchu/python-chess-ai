@@ -5,6 +5,7 @@ from chess.pieces.Knight import Knight
 from chess.pieces.King import King
 from chess.pieces.Queen import Queen
 from chess.pieces.NonePiece import NonePiece
+from .Position import Position
 
 class Board:
 
@@ -14,22 +15,27 @@ class Board:
 
 
     def initBoard(self):
-        files = [chr(x) for x in range(97, 105)]
-        for y in reversed(range(1, 9)):
-            for x in files:
-                self.board["{}{}".format(x, y)] = NonePiece()
+        files = [chr(file) for file in range(97, 105)]
+        ranks = [str(rank) for rank in reversed(range(1, 9))]
+        for rank in ranks:
+            for file in files:
+                self.setPiece(Position(file, rank))
 
         self.setPieces()
 
 
     def setPieces(self):
-        files = [chr(x) for x in range(97, 105)]
+        files = [chr(file) for file in range(97, 105)]
         pieces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
         for i in range(0,8):
-            self.board["{}8".format(files[i])] = pieces[i]("black")
-            self.board["{}7".format(files[i])] = Pawn("black")
-            self.board["{}2".format(files[i])] = Pawn("white")
-            self.board["{}1".format(files[i])] = pieces[i]("white")
+            self.setPiece(Position(files[i], "8"), pieces[i]("black"))
+            self.setPiece(Position(files[i], "7"), Pawn("black"))
+            self.setPiece(Position(files[i], "2"), Pawn("white"))
+            self.setPiece(Position(files[i], "1"), pieces[i]("white"))
+
+
+    def setPiece(self, position, piece=NonePiece()):
+        self.board[position.get()] = piece
 
 
     def getBoard(self):
@@ -37,13 +43,14 @@ class Board:
         return self.listChunk(board, 8)
 
 
-    def getPieceImage(self, position):
+    def getPieceImage(self, positionString):
+        position = Position.new(positionString)
         piece = self.getPiece(position)
         return piece.image
 
 
     def getPiece(self, position):
-        piece = self.board[position]
+        piece = self.board[position.get()]
         return piece
     
 
@@ -54,100 +61,67 @@ class Board:
     def move(self, currentPosition, targetPosition):
         if (not self.canMove(currentPosition, targetPosition)):
             raise Exception("움직일 수 없는 위치 입니다.")
-        currentPiece = self.board[currentPosition]
-        self.board[currentPosition] = NonePiece()
-        self.board[targetPosition] = currentPiece
+        currentPiece = self.getPiece(currentPosition)
+        self.setPiece(currentPosition)
+        self.setPiece(targetPosition, currentPiece)
         currentPiece.move()
 
 
     def canMove(self, currentPosition, targetPosition):
         movablePositions = self.getMovablePositions(currentPosition)
-        return targetPosition in movablePositions
+        return movablePositions.contains(targetPosition)
 
 
     def getMovablePositions(self, position):
-        positions = []
-        piece = self.board[position]
+        piece = self.getPiece(position)
 
         if (piece.isNone()):
-            return positions
+            return []
         
-        for movablePositions in piece.getMovablePositions(position):
-            for movablePosition in movablePositions:
-                if (self.check(piece, position, movablePosition)):
-                    positions.append(movablePosition)
-                    if (self.board[movablePosition].isEnemy(piece)):
-                        break
-                else:
-                    break
-            
-        return positions
+        movablePositions = piece.getMovablePositions(position)
 
-
-    # def getMovablePositions(self, position):
-    #     positions = []
-    #     piece = self.board[position]
-
-    #     if (piece.isNone()):
-    #         return positions
-        
-    #     movablePositions = piece.getMovablePositions(position)
-    #     for movablePosition in movablePositions:
-    #         (positions.append(movablePosition) if self.check(piece, position, movablePosition) else None) 
-    #     return positions
-
-
-    def check(self, piece, currentPosition, targetPosition):
         if (piece.isIt(Pawn)):
-            return self.checkMovablePawn(currentPosition, targetPosition)
-        if (piece.isIt(Knight) or piece.isIt(King)):
-            return self.checkMovableBasic(piece, targetPosition)
-        return self.checkMovable(piece, currentPosition, targetPosition)
+            return movablePositions.filter(self.canMovablePawn, position)
+        
+        if (piece.isIt(King) or piece.isIt(Knight)):
+            return movablePositions.filter(self.canMovableBasic, position)
+            
+        movableEndPositions = piece.getMovableEndPositions(position)
+        return movableEndPositions
 
 
-    def getDirection(self, currentPosition, targetPosition):
-        x = self.toDirection(ord(targetPosition[0]) - ord(currentPosition[0]))
-        y = self.toDirection(ord(targetPosition[1]) - ord(currentPosition[1]))
-        return (x, y)
-    
+    def canMovablePawn(self, currentPosition, targetPosition):
+        currentPiece = self.getPiece(currentPosition)
+        targetPiece = self.getPiece(targetPosition)
+        direction = currentPosition.getDirection(targetPosition)
 
-    def toDirection(self, value):
-        if (value < 0):
-            return -1
-        if (value > 0):
-            return 1
-        return 0
-    
-
-    def checkMovablePawn(self, currentPosition, targetPosition):
-        currentPiece = self.board[currentPosition]
-        targetPiece = self.board[targetPosition]
-        direction = self.getDirection(currentPosition, targetPosition)
         if (currentPiece.isFirstMove and direction[0] == 0):
-            betweenPiece = self.board[self.moveDirection(currentPosition, direction)]
+            betweenPiece = self.getPiece(currentPosition.move(direction))
             return targetPiece.isNone() and betweenPiece.isNone()
+        
         if (direction[0] == 0):
             return targetPiece.isNone()
-        return targetPiece.isEnemy(currentPiece)
+        
+        return targetPiece.isEnemy(currentPiece)    
     
 
-    def checkMovableBasic(self, currentPiece, targetPosition):
-        targetPiece = self.board[targetPosition]
+    def canMovableBasic(self, currentPosition, targetPosition):
+        currentPiece = self.getPiece(currentPosition)
+        targetPiece = self.getPiece(targetPosition)
         return targetPiece.isNone() or targetPiece.isEnemy(currentPiece)
     
 
-    def checkMovable(self, piece, currentPosition, targetPosition, direction=None):
+    def checkMovable(self, piece, currentPosition, targetPosition, direction=None, positions=[]):
         if (currentPosition == targetPosition):
-            return True
+            return positions
         if (direction == None):
+            positions = []
             direction = self.getDirection(currentPosition, targetPosition)
         nextPosition = self.moveDirection(currentPosition, direction)
-        if (self.checkMovableBasic(piece, nextPosition)):
-            return self.checkMovable(piece, nextPosition, targetPosition, direction)
-        return False
-    
-
-    def moveDirection(self, position, direction):
-        x = chr(ord(position[0]) + direction[0])
-        y = chr(ord(position[1]) + direction[1])
-        return x + y
+        nextPiece = self.board[nextPosition]
+        if (nextPiece.isNone()):
+            positions.append(nextPosition)
+            return self.checkMovable(piece, nextPosition, targetPosition, direction, positions)
+        if (nextPiece.isEnemy(piece)):
+            positions.append(nextPosition)
+        return positions
