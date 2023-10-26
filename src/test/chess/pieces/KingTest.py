@@ -1,5 +1,6 @@
 import unittest
 from chess.pieces.King import King
+from chess.board.Position import Position
 
 class KingTest(unittest.TestCase):
 
@@ -11,11 +12,11 @@ class KingTest(unittest.TestCase):
     
     def test_get_movable_positions(self):
         king = King("white")
-        position = "e4"
+        position = Position.new("e4")
 
         positions = king.getMovablePositions(position)
 
-        self.assertEqual(positions, ["d5", "e5", "f5", "f4", 'f3', 'e3', 'd3', 'd4'])
+        self.assertEqual(positions.getToString(), ["d5", "e5", "f5", "f4", 'f3', 'e3', 'd3', 'd4'])
 
 
 if __name__ == '__main__':

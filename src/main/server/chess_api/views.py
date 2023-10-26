@@ -1,18 +1,19 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from .serializers import PositionsSerializer
+from .serializers import MoveRequestSerializer
 from rest_framework.parsers import JSONParser
-from chess.screen.Screen import Screen
 from home.views import board
+from chess.board.Position import Position
+from chess.screen.Screen import Screen
 
 @api_view(['POST'])
 def movePiece(request):
     data = JSONParser().parse(request)
-    serializer = PositionsSerializer(data=data)
+    serializer = MoveRequestSerializer(data=data)
     if serializer.is_valid():
-        currentPosition = Screen.checkPosition(serializer.data["currentPosition"])
-        targetPosition = Screen.checkPosition(serializer.data["targetPosition"])
+        currentPosition = Position.new(serializer.data["currentPosition"])
+        targetPosition = Position.new(serializer.data["targetPosition"])
         board.move(currentPosition, targetPosition)
         Screen.showBoard(board)
         return JsonResponse(serializer.data, status=200)
@@ -21,5 +22,5 @@ def movePiece(request):
 
 @api_view(['GET'])
 def getMovablePositions(request, position):
-    positions = board.getMovablePositions(position)
-    return JsonResponse(positions, safe=False, status=200)
+    positions = board.getMovablePositions(Position.new(position))
+    return JsonResponse(positions.getToString(), safe=False, status=200)

@@ -6,6 +6,7 @@ from chess.pieces.King import King
 from chess.pieces.Queen import Queen
 from chess.pieces.NonePiece import NonePiece
 from .Position import Position
+from .Positions import Positions
 
 class Board:
 
@@ -76,10 +77,9 @@ class Board:
         piece = self.getPiece(position)
 
         if (piece.isNone()):
-            return []
+            return Positions.empty()
         
         movablePositions = piece.getMovablePositions(position)
-
         if (piece.isIt(Pawn)):
             return movablePositions.filter(self.canMovablePawn, position)
         
@@ -87,7 +87,10 @@ class Board:
             return movablePositions.filter(self.canMovableBasic, position)
             
         movableEndPositions = piece.getMovableEndPositions(position)
-        return movableEndPositions
+        positions = Positions.empty()
+        for movableEndPosition in movableEndPositions.positions:
+            positions = self.getPositions(piece, position, movableEndPosition, positions)
+        return positions
 
 
     def canMovablePawn(self, currentPosition, targetPosition):
@@ -111,17 +114,20 @@ class Board:
         return targetPiece.isNone() or targetPiece.isEnemy(currentPiece)
     
 
-    def checkMovable(self, piece, currentPosition, targetPosition, direction=None, positions=[]):
+    def getPositions(self, piece, currentPosition, targetPosition, positions, direction=None):
         if (currentPosition == targetPosition):
             return positions
+        
         if (direction == None):
-            positions = []
-            direction = self.getDirection(currentPosition, targetPosition)
-        nextPosition = self.moveDirection(currentPosition, direction)
-        nextPiece = self.board[nextPosition]
+            direction = currentPosition.getDirection(targetPosition)
+
+        nextPosition = currentPosition.move(direction)
+        if (not nextPosition.isAvailable()):
+            return positions
+        nextPiece = self.getPiece(nextPosition)
         if (nextPiece.isNone()):
             positions.append(nextPosition)
-            return self.checkMovable(piece, nextPosition, targetPosition, direction, positions)
+            return self.getPositions(piece, nextPosition, targetPosition, positions, direction)
         if (nextPiece.isEnemy(piece)):
             positions.append(nextPosition)
         return positions

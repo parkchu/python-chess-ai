@@ -1,6 +1,10 @@
 class Positions:
 
-    def __init__(self, positions=[]):
+    def empty():
+        return Positions([])
+
+
+    def __init__(self, positions):
         self.positions = positions
 
     
@@ -14,14 +18,18 @@ class Positions:
     
     
     def filter(self, condition, value):
-        positions = []
+        positions = Positions.empty()
 
         for position in self.positions:
             if (condition(value, position)):
                 positions.append(position)
 
-        return Positions(positions)
+        return positions
         
     
     def contains(self, position):
         return position in self.positions
+    
+
+    def getToString(self):
+        return list(map(lambda position: position.get(), self.positions))

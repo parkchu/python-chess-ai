@@ -1,15 +1,16 @@
 import unittest
 from chess.pieces.Rook import Rook
+from chess.board.Position import Position
 
 class RookTest(unittest.TestCase):
     
     def test_get_movable_positions(self):
         rook = Rook("white")
-        position = "e4"
+        position = Position.new("e4")
 
-        positions = rook.getMovablePositions(position)
+        positions = rook.getMovableEndPositions(position)
 
-        self.assertEqual(positions, ["e8", 'h4', 'e1', 'a4'])
+        self.assertEqual(positions.getToString(), ["e8", 'h4', 'e1', 'a4'])
 
 
 if __name__ == '__main__':

@@ -39,8 +39,8 @@ class Piece:
     
 
     def getMovablePositions(self, position):
-        positions = Positions()
-
+        positions = Positions.empty()
+        print(positions.getToString())
         for distance in self.distances:
             movablePosition = position.move(distance)
             positions.append(movablePosition)
@@ -49,7 +49,7 @@ class Piece:
     
 
     def getMovableEndPositions(self, position):
-        positions = Positions()
+        positions = Positions.empty()
 
         for direction in self.directions:
             nextPosition = position
