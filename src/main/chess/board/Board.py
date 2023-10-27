@@ -10,9 +10,11 @@ from .Positions import Positions
 
 class Board:
 
-    def __init__(self):
+    def __init__(self, shouldSetup=True):
         self.board = {}
         self.initBoard()
+        if (shouldSetup):
+            self.setPieces()
 
 
     def initBoard(self):
@@ -21,8 +23,6 @@ class Board:
         for rank in ranks:
             for file in files:
                 self.setPiece(Position(file, rank))
-
-        self.setPieces()
 
 
     def setPieces(self):
@@ -79,21 +79,20 @@ class Board:
         if (piece.isNone()):
             return Positions.empty()
         
+        if (piece.distances):
+            return self.getMovablePositionsByDistances(piece, position)
+
+        return self.getMovablePositionsByDirections(piece, position)
+    
+
+    def getMovablePositionsByDistances(self, piece, position):
         movablePositions = piece.getMovablePositions(position)
         if (piece.isIt(Pawn)):
-            return movablePositions.filter(self.canMovablePawn, position)
-        
-        if (piece.isIt(King) or piece.isIt(Knight)):
-            return movablePositions.filter(self.canMovableBasic, position)
-            
-        movableEndPositions = piece.getMovableEndPositions(position)
-        positions = Positions.empty()
-        for movableEndPosition in movableEndPositions.positions:
-            positions = self.getPositions(piece, position, movableEndPosition, positions)
-        return positions
+            return movablePositions.filter(self.isMovablePawn, position)
+        return movablePositions.filter(self.isMovable, position)
 
 
-    def canMovablePawn(self, currentPosition, targetPosition):
+    def isMovablePawn(self, currentPosition, targetPosition):
         currentPiece = self.getPiece(currentPosition)
         targetPiece = self.getPiece(targetPosition)
         direction = currentPosition.getDirection(targetPosition)
@@ -108,26 +107,36 @@ class Board:
         return targetPiece.isEnemy(currentPiece)    
     
 
-    def canMovableBasic(self, currentPosition, targetPosition):
+    def isMovable(self, currentPosition, targetPosition):
         currentPiece = self.getPiece(currentPosition)
         targetPiece = self.getPiece(targetPosition)
         return targetPiece.isNone() or targetPiece.isEnemy(currentPiece)
     
 
-    def getPositions(self, piece, currentPosition, targetPosition, positions, direction=None):
+    def getMovablePositionsByDirections(self, piece, position):
+        movableEndPositions = piece.getMovableEndPositions(position)
+        positions = Positions.empty()
+        for movableEndPosition in movableEndPositions.positions:
+            positions = self.getMovablePath(piece, position, movableEndPosition, positions)
+        return positions
+    
+
+    def getMovablePath(self, piece, currentPosition, targetPosition, positions):
         if (currentPosition == targetPosition):
             return positions
         
-        if (direction == None):
-            direction = currentPosition.getDirection(targetPosition)
-
+        direction = currentPosition.getDirection(targetPosition)
         nextPosition = currentPosition.move(direction)
+        
         if (not nextPosition.isAvailable()):
             return positions
+        
         nextPiece = self.getPiece(nextPosition)
         if (nextPiece.isNone()):
             positions.append(nextPosition)
-            return self.getPositions(piece, nextPosition, targetPosition, positions, direction)
+            return self.getMovablePath(piece, nextPosition, targetPosition, positions)
+        
         if (nextPiece.isEnemy(piece)):
             positions.append(nextPosition)
+            
         return positions

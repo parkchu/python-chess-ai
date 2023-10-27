@@ -2,13 +2,19 @@ from chess.board.Positions import Positions
 
 class Piece:
 
-    def __init__(self, team, image, distances=[], directions=[]):
+    def __init__(self, team, image):
         self.team = team
         self.image = self.setImage(image)
-        self.distances = distances
-        self.directions = directions
+        self.distances = []
+        self.directions = []
         self.isFirstMove = True
 
+
+    def setImage(self, image):
+        if (self.isBlack()):
+            return image.upper()
+        return image
+    
 
     def isWhite(self):
         return self.team == "white"
@@ -32,15 +38,8 @@ class Piece:
         return type(self) is pieceType
     
 
-    def setImage(self, image):
-        if (self.isBlack()):
-            return image.upper()
-        return image
-    
-
     def getMovablePositions(self, position):
         positions = Positions.empty()
-        print(positions.getToString())
         for distance in self.distances:
             movablePosition = position.move(distance)
             positions.append(movablePosition)
