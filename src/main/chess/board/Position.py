@@ -25,7 +25,13 @@ class Position(object):
 
     def get(self):
         return self.file + self.rank
-    
+
+
+    def getDistance(self, targetPosition):
+        x = ord(targetPosition.file) - ord(self.file)
+        y = ord(targetPosition.rank) - ord(self.rank)
+        return (x, y)
+
 
     def getDirection(self, targetPosition):
         x = self.toDirection(ord(targetPosition.file) - ord(self.file))

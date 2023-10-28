@@ -92,6 +92,16 @@ class BoardTest(unittest.TestCase):
 
         movablePositions = ["a2"]
         self.assertEqual(positions.getToString(), movablePositions)
+
+    
+    def test_get_movable_positions_knight(self):
+        board = Board()
+        position = Position.new("b1")
+
+        positions = board.getMovablePositions(position)
+
+        movablePositions = ["a3", "c3"]
+        self.assertEqual(positions.getToString(), movablePositions)
     
 
 if __name__ == '__main__':

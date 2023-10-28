@@ -13,6 +13,11 @@ class Positions:
             self.positions.append(position)
 
     
+    def appendAll(self, positions):
+        for position in positions.positions:
+            self.append(position)
+
+    
     def getByIndex(self, index):
         return self.positions[index]
     

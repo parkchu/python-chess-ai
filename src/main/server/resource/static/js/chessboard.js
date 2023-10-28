@@ -1,4 +1,4 @@
-const APIURL = "https://glorious-fortnight-5xxrx7jrp7h6rg-8000.app.github.dev";
+const APIURL = "https://effective-spork-wr76pqqq7vvw2g66r-8000.app.github.dev";
 const board = document.querySelector("#boards tbody");
 const turnLabel = document.querySelector("h1.turn");
 var currentPoint

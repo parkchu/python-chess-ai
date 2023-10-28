@@ -14,7 +14,7 @@ class KingTest(unittest.TestCase):
         king = King("white")
         position = Position.new("e4")
 
-        positions = king.getMovablePositions(position)
+        positions = king.getMovableEndPositions(position)
 
         self.assertEqual(positions.getToString(), ["d5", "e5", "f5", "f4", 'f3', 'e3', 'd3', 'd4'])
 

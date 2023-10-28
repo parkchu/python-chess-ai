@@ -15,16 +15,13 @@ class Pawn(Piece):
         if (self.isWhite()):
             return [(0, 1), (-1, 1), (1, 1)]
         return [(0, -1), (-1, -1), (1, -1)]
+    
 
-
-    def getMovablePositions(self, position):
-        positions = super().getMovablePositions(position)
+    def getDistances(self):
+        distances = self.distances.copy()
         if (self.isFirstMove):
-            distance = self.getFirstMoveDistance()
-            movablePosition = position.move(distance)
-            positions.append(movablePosition)
-            
-        return positions
+            distances.append(self.getFirstMoveDistance())
+        return distances
         
 
     def getFirstMoveDistance(self):

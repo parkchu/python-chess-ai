@@ -14,7 +14,7 @@ class PawnTest(unittest.TestCase):
         pawn = Pawn("white")
         position = Position.new("b2")
 
-        positions = pawn.getMovablePositions(position)
+        positions = pawn.getMovableEndPositions(position)
 
         self.assertEqual(positions.getToString(), ["b3", "a3", "c3", "b4"])
 
@@ -23,7 +23,7 @@ class PawnTest(unittest.TestCase):
         pawn = Pawn("white")
         position = Position.new("a2")
 
-        positions = pawn.getMovablePositions(position)
+        positions = pawn.getMovableEndPositions(position)
 
         self.assertEqual(positions.getToString(), ["a3", "b3", "a4"])
 
@@ -32,7 +32,7 @@ class PawnTest(unittest.TestCase):
         pawn = Pawn("black")
         position = Position.new("b7")
 
-        positions = pawn.getMovablePositions(position)
+        positions = pawn.getMovableEndPositions(position)
 
         self.assertEqual(positions.getToString(), ["b6", "a6", "c6", "b5"])
 
@@ -42,7 +42,7 @@ class PawnTest(unittest.TestCase):
         pawn.move()
         position = Position.new("b3")
 
-        positions = pawn.getMovablePositions(position)
+        positions = pawn.getMovableEndPositions(position)
 
         self.assertEqual(positions.getToString(), ["b4", "a4", "c4"])
 

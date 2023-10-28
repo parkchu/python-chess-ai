@@ -8,7 +8,7 @@ class KnightTest(unittest.TestCase):
         knight = Knight("white")
         position = Position.new("e4")
 
-        positions = knight.getMovablePositions(position)
+        positions = knight.getMovableEndPositions(position)
 
         self.assertEqual(positions.getToString(), ["d6", "f6", "g5", "g3", 'f2', 'd2', 'c3', 'c5'])
 

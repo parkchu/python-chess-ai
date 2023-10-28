@@ -75,22 +75,55 @@ class Board:
 
     def getMovablePositions(self, position):
         piece = self.getPiece(position)
+        positions = Positions.empty()
 
         if (piece.isNone()):
-            return Positions.empty()
-        
-        if (piece.distances):
-            return self.getMovablePositionsByDistances(piece, position)
+            return positions
 
-        return self.getMovablePositionsByDirections(piece, position)
+        movableEndPositions = piece.getMovableEndPositions(position)
+        for movableEndPosition in movableEndPositions.positions:
+            positions.appendAll(self.getMovablePath(position, movableEndPosition, piece.distances))
+            
+        return positions
     
 
-    def getMovablePositionsByDistances(self, piece, position):
-        movablePositions = piece.getMovablePositions(position)
-        if (piece.isIt(Pawn)):
-            return movablePositions.filter(self.isMovablePawn, position)
-        return movablePositions.filter(self.isMovable, position)
+    def getMovablePath(self, currentPosition, targetPosition, hasDistance):
+        positions = Positions.empty()
+        direction = currentPosition.getDirection(targetPosition)
+        if (hasDistance):
+            direction = currentPosition.getDistance(targetPosition)
 
+        nextPosition = currentPosition.move(direction)
+
+        while (self.isContinuousMovable(nextPosition, targetPosition)):
+            positions.append(nextPosition)
+            nextPosition = nextPosition.move(direction)
+
+        if (self.isMovable(currentPosition, nextPosition)):
+            positions.append(nextPosition)
+
+        return positions
+    
+
+    def isContinuousMovable(self, currentPosition, targetPosition):
+        if (currentPosition == targetPosition):
+            return False
+        return currentPosition.isAvailable() and self.getPiece(currentPosition).isNone()
+    
+
+    def isMovable(self, currentPosition, targetPosition):
+        piece = self.getPiece(currentPosition)
+        condition = self.isMovableBasic
+        if (piece.isIt(Pawn)):
+            condition = self.isMovablePawn
+        return condition(currentPosition, targetPosition)
+
+
+    def isMovableBasic(self, currentPosition, targetPosition):
+        currentPiece = self.getPiece(currentPosition)
+        targetPiece = self.getPiece(targetPosition)
+        return targetPiece.isNone() or targetPiece.isEnemy(currentPiece)
+    
 
     def isMovablePawn(self, currentPosition, targetPosition):
         currentPiece = self.getPiece(currentPosition)
@@ -104,39 +137,4 @@ class Board:
         if (direction[0] == 0):
             return targetPiece.isNone()
         
-        return targetPiece.isEnemy(currentPiece)    
-    
-
-    def isMovable(self, currentPosition, targetPosition):
-        currentPiece = self.getPiece(currentPosition)
-        targetPiece = self.getPiece(targetPosition)
-        return targetPiece.isNone() or targetPiece.isEnemy(currentPiece)
-    
-
-    def getMovablePositionsByDirections(self, piece, position):
-        movableEndPositions = piece.getMovableEndPositions(position)
-        positions = Positions.empty()
-        for movableEndPosition in movableEndPositions.positions:
-            positions = self.getMovablePath(piece, position, movableEndPosition, positions)
-        return positions
-    
-
-    def getMovablePath(self, piece, currentPosition, targetPosition, positions):
-        if (currentPosition == targetPosition):
-            return positions
-        
-        direction = currentPosition.getDirection(targetPosition)
-        nextPosition = currentPosition.move(direction)
-        
-        if (not nextPosition.isAvailable()):
-            return positions
-        
-        nextPiece = self.getPiece(nextPosition)
-        if (nextPiece.isNone()):
-            positions.append(nextPosition)
-            return self.getMovablePath(piece, nextPosition, targetPosition, positions)
-        
-        if (nextPiece.isEnemy(piece)):
-            positions.append(nextPosition)
-            
-        return positions
+        return targetPiece.isEnemy(currentPiece)

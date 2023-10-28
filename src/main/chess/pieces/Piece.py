@@ -38,16 +38,23 @@ class Piece:
         return type(self) is pieceType
     
 
-    def getMovablePositions(self, position):
+    def getMovableEndPositions(self, position):
+        if (self.distances):
+            return self.getMovableEndPositionsByDistances(position)
+        return self.getMovableEndPositionsByDirections(position)
+
+
+    def getMovableEndPositionsByDistances(self, position):
         positions = Positions.empty()
-        for distance in self.distances:
+
+        for distance in self.getDistances():
             movablePosition = position.move(distance)
             positions.append(movablePosition)
 
         return positions
-    
 
-    def getMovableEndPositions(self, position):
+    
+    def getMovableEndPositionsByDirections(self, position):
         positions = Positions.empty()
 
         for direction in self.directions:
@@ -61,3 +68,7 @@ class Piece:
     
     def move(self):
         self.isFirstMove = False
+
+    
+    def getDistances(self):
+        return self.distances
