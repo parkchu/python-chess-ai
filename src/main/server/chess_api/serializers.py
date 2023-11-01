@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Positions
+from .models import MoveRequest
 
-class PositionsSerializer(serializers.ModelSerializer):
+class MoveRequestSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Positions
+        model = MoveRequest
         fields = ("__all__")

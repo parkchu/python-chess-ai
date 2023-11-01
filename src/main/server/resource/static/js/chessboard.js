@@ -1,15 +1,19 @@
-const APIURL = "https://glorious-fortnight-5xxrx7jrp7h6rg-8000.app.github.dev"
-var currentPoint = null
+const APIURL = "https://effective-spork-wr76pqqq7vvw2g66r-8000.app.github.dev";
+const board = document.querySelector("#boards tbody");
+const turnLabel = document.querySelector("h1.turn");
+var currentPoint
+var turn
 
 function init() {
-    board = document.querySelector("#boards tbody");
+    currentPoint = null;
+    turn = "white"
     board.addEventListener("click", clickBoard);
 }
 
 function clickBoard(event) {
     event.preventDefault();
     targetPoint = event.target.parentElement;
-    getFunction(targetPoint)(targetPoint)
+    getFunction(targetPoint)(targetPoint);
 }
 
 function getFunction(targetPoint) {
@@ -19,15 +23,30 @@ function getFunction(targetPoint) {
     if (currentPoint == null || isSameTeam(currentPoint, targetPoint)) {
         return setCurrentPoint;
     }
-    return movePiece;
+    if (getPieceAttribute(targetPoint, "data-movable") && isTurn(currentPoint)) {
+        return movePiece;
+    }
+    deleteMovablePoints();
+    return setCurrentPoint;
+}
+
+function removeClicked(targetPoint) {
+    elementA = targetPoint.children[0];
+    elementA.removeAttribute("href");
+    elementA.setAttribute("href", "");
+    currentPoint = null;
+    deleteMovablePoints();
 }
 
 function isSameTeam(currentPoint, targetPoint) {
-    return currentPoint.children[0].getAttribute("data-team") === targetPoint.children[0].getAttribute("data-team");
+    return getPieceAttribute(currentPoint, "data-team") === getPieceAttribute(targetPoint, "data-team");
 }
 
 function setCurrentPoint(targetPoint) {
     currentPoint = getNonemptyPoint(targetPoint);
+    if (currentPoint != null) {
+        requestGetMovablePositions();
+    }
 }
 
 function getNonemptyPoint(targetPoint) {
@@ -38,11 +57,60 @@ function getNonemptyPoint(targetPoint) {
     return targetPoint;
 }
 
-function removeClicked(targetPoint) {
-    elementA = targetPoint.children[0];
-    elementA.removeAttribute("href");
-    elementA.setAttribute("href", "");
-    currentPoint = null;
+function requestGetMovablePositions() {
+    url = `${APIURL}/api/chess/movable-positions/${currentPoint.id}`;
+    method = "GET";
+    request(url, method)
+    .then((response) => response.json())
+    .then((data) => showMovablePoints(data));
+}
+
+function showMovablePoints(positions) {
+    deleteMovablePoints();
+    console.log(positions);
+    positions.forEach(position => {
+        showMovablePoint(position);
+    });
+}
+
+function showMovablePoint(position) {
+    point = board.querySelector(`#${position}`);
+    if (isEmptyPiece(point)) {
+        point.innerHTML = '<a href="" data-movable="true">&#9900;</a>';
+    } else {
+        piece = point.children[0];
+        piece.classList.add("highlight");
+        piece.setAttribute("data-movable", "true");
+    }
+}
+
+function isEmptyPiece(point) {
+    return getPieceAttribute(point, "data-team") == null;
+}
+
+function getPieceAttribute(point, attribute) {
+    return point.children[0].getAttribute(attribute);
+}
+
+function isTurn(currentPoint) {
+    return getPieceAttribute(currentPoint, "data-team") === turn
+}
+
+function deleteMovablePoints() {
+    pieces = board.querySelectorAll("a[data-movable=true], a.highlight");
+    Array.from(pieces).forEach(piece => {
+        deleteMovablePoint(piece);
+    });
+}
+
+function deleteMovablePoint(piece) {
+    point = piece.parentElement;
+    if (isEmptyPiece(point)) {
+        point.innerHTML = makeEmptyPiece();
+    } else {
+        piece.classList.remove("highlight");
+        piece.removeAttribute("data-movable");
+    }
 }
 
 function movePiece(targetPoint) {
@@ -50,25 +118,43 @@ function movePiece(targetPoint) {
     targetPoint.innerHTML = currentPoint.innerHTML;
     currentPoint.innerHTML = makeEmptyPiece();
     removeClicked(targetPoint);
+    changeTurn();
 }
 
 function requestMove(currentPosition, targetPosition) {
-    fetch(`${APIURL}/api/chess/move`, {
-        method: "POST", 
+    url = `${APIURL}/api/chess/move`;
+    method = "POST";
+    body = JSON.stringify({
+        currentPosition: currentPosition,
+        targetPosition: targetPosition,
+    });
+    request(url, method, body)
+    .then((response) => response.json())
+    .then((data) => console.log(data));
+}
+
+function request(url, method, body = null) {
+    return fetch(url, {
+        method: method, 
         headers: { 
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-        currentPosition: currentPosition,
-        targetPosition: targetPosition,
-        }),
-    })
-    .then((response) => response.json())
-    .then((data) => console.log(data))
+        body: body
+    });
 }
 
 function makeEmptyPiece() {
-    return '<a href=""></a>'
+    return '<a href=""></a>';
+}
+
+function changeTurn() {
+    if (turn === "white") {
+        turn = "black";
+        turnLabel.innerHTML = '<span class="label label-default turn">흑이 둘 차례</span>';
+    } else { 
+        turn = "white";
+        turnLabel.innerHTML = '<span class="label label-default turn">백이 둘 차례</span>';
+    }
 }
 
 init();

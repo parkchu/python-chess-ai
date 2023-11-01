@@ -4,9 +4,17 @@ from chess.pieces.Pawn import Pawn
 class PieceTest(unittest.TestCase):
 
     def test_make_white_piece(self):
-        pawn = Pawn("white")
+        piece = Pawn("white")
         
-        self.assertEqual(pawn.team, "white")
+        self.assertEqual(piece.team, "white")
+        self.assertEqual(piece.image, "p")
+
+
+    def test_make_black_piece(self):
+        piece = Pawn("black")
+        
+        self.assertEqual(piece.team, "black")
+        self.assertEqual(piece.image, "P")
 
 
 if __name__ == '__main__':
