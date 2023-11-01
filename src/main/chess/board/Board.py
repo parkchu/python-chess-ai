@@ -80,38 +80,37 @@ class Board:
         if (piece.isNone()):
             return positions
 
-        movableEndPositions = piece.getMovableEndPositions(position)
-        for movableEndPosition in movableEndPositions.positions:
-            positions.appendAll(self.getMovablePath(position, movableEndPosition, piece.distances))
-            
+        for distance in piece.getDistances():
+            positions.appendAll(self.getMovablePath(position, distance))
+
+        for direction in piece.getDirections():
+            positions.appendAll(self.getMovablePath(position, direction, True))
+
         return positions
     
 
-    def getMovablePath(self, currentPosition, targetPosition, hasDistance):
+    def getMovablePath(self, position, distance, isDirection = False):
         positions = Positions.empty()
-        direction = currentPosition.getDirection(targetPosition)
-        if (hasDistance):
-            direction = currentPosition.getDistance(targetPosition)
+        nextPosition = position.move(distance)
 
-        nextPosition = currentPosition.move(direction)
-
-        while (self.isContinuousMovable(nextPosition, targetPosition)):
+        while (self.isContinuousMovable(nextPosition) and isDirection):
             positions.append(nextPosition)
-            nextPosition = nextPosition.move(direction)
-
-        if (self.isMovable(currentPosition, nextPosition)):
+            nextPosition = nextPosition.move(distance)
+        
+        if (self.isMovable(position, nextPosition)):
             positions.append(nextPosition)
 
         return positions
     
 
-    def isContinuousMovable(self, currentPosition, targetPosition):
-        if (currentPosition == targetPosition):
-            return False
-        return currentPosition.isAvailable() and self.getPiece(currentPosition).isNone()
+    def isContinuousMovable(self, position):
+        return position.isAvailable() and self.getPiece(position).isNone()
     
 
     def isMovable(self, currentPosition, targetPosition):
+        if (not targetPosition.isAvailable()):
+            return False
+        
         piece = self.getPiece(currentPosition)
         condition = self.isMovableBasic
         if (piece.isIt(Pawn)):

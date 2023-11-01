@@ -1,5 +1,3 @@
-from chess.board.Positions import Positions
-
 class Piece:
 
     def __init__(self, team, image):
@@ -37,34 +35,6 @@ class Piece:
     def isIt(self, pieceType):
         return type(self) is pieceType
     
-
-    def getMovableEndPositions(self, position):
-        if (self.distances):
-            return self.getMovableEndPositionsByDistances(position)
-        return self.getMovableEndPositionsByDirections(position)
-
-
-    def getMovableEndPositionsByDistances(self, position):
-        positions = Positions.empty()
-
-        for distance in self.getDistances():
-            movablePosition = position.move(distance)
-            positions.append(movablePosition)
-
-        return positions
-
-    
-    def getMovableEndPositionsByDirections(self, position):
-        positions = Positions.empty()
-
-        for direction in self.directions:
-            nextPosition = position
-            while (nextPosition.move(direction).isAvailable()):
-                nextPosition = nextPosition.move(direction)
-            positions.append(nextPosition)
-
-        return positions
-    
     
     def move(self):
         self.isFirstMove = False
@@ -72,3 +42,7 @@ class Piece:
     
     def getDistances(self):
         return self.distances
+    
+
+    def getDirections(self):
+        return self.directions

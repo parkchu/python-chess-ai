@@ -1,16 +1,12 @@
 import unittest
 from chess.pieces.Bishop import Bishop
-from chess.board.Position import Position
 
 class BishopTest(unittest.TestCase):
     
-    def test_get_movable_positions(self):
-        bishop = Bishop("white")
-        position = Position.new("e4")
-
-        positions = bishop.getMovableEndPositions(position)
-
-        self.assertEqual(positions.getToString(), ["a8", 'h7', 'h1', 'b1'])
+    def test_make_white_bishop(self):
+        piece = Bishop("white")
+        
+        self.assertEqual(piece.image, "b")
 
 
 if __name__ == '__main__':
