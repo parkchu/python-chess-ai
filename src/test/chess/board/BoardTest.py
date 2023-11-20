@@ -2,6 +2,9 @@ import unittest
 from chess.board.Board import Board
 from chess.board.Position import Position
 from chess.pieces.Pawn import Pawn
+from chess.pieces.King import King
+from chess.pieces.Queen import Queen
+from chess.pieces.Piece import Team
 
 class BoardTest(unittest.TestCase):
 
@@ -50,7 +53,7 @@ class BoardTest(unittest.TestCase):
         board = Board()
         blackPawnPosition = Position.new("a3")
         whitePawnPosition = Position.new("b2")
-        board.setPiece(blackPawnPosition, Pawn("black"))
+        board.setPiece(blackPawnPosition, Pawn(Team.BLACK))
 
         positions = board.getMovablePositions(whitePawnPosition)
 
@@ -74,7 +77,7 @@ class BoardTest(unittest.TestCase):
         board = Board()
         blackPawnPosition = Position.new("a3")
         whitePawnPosition = Position.new("a2")
-        board.setPiece(blackPawnPosition, Pawn("black"))
+        board.setPiece(blackPawnPosition, Pawn(Team.BLACK))
 
         positions = board.getMovablePositions(whitePawnPosition)
 
@@ -86,7 +89,7 @@ class BoardTest(unittest.TestCase):
         board = Board()
         blackPawnPosition = Position.new("a2")
         whiteRookPosition = Position.new("a1")
-        board.setPiece(blackPawnPosition, Pawn("black"))
+        board.setPiece(blackPawnPosition, Pawn(Team.BLACK))
 
         positions = board.getMovablePositions(whiteRookPosition)
 
@@ -102,7 +105,50 @@ class BoardTest(unittest.TestCase):
 
         movablePositions = ["a3", "c3"]
         self.assertEqual(positions.getToString(), movablePositions)
+
     
+    def test_set_king(self):
+        board = Board(False)
+        blackKingPosition = Position.new("a8")
+        blackKing = King(Team.BLACK)
+        board.setPiece(blackKingPosition, blackKing)
+
+        self.assertEqual(board.kingPosition[Team.BLACK], blackKingPosition)
+
+
+    def test_set_king(self):
+        board = Board(False)
+        blackKingPosition = Position.new("a8")
+        blackKing = King(Team.BLACK)
+        board.setPiece(blackKingPosition, blackKing)
+        movablePositon = Position.new("a7")
+        
+        board.move(blackKingPosition, movablePositon)
+
+        self.assertEqual(board.kingPosition[Team.BLACK], movablePositon)
+
+
+    def test_is_check(self):
+        board = Board(False)
+        blackKingPosition = Position.new("a8")
+        blackKing = King(Team.BLACK)
+        whiteQueenPositoin = Position.new("a1")
+        whiteQueen = Queen(Team.WHITE)
+        board.setPiece(blackKingPosition, blackKing)
+        board.setPiece(whiteQueenPositoin, whiteQueen)
+
+        result = board.isCheck(Team.BLACK)
+
+        self.assertEqual(result, True)
+
+    
+    def test_is_check(self):
+        board = Board()
+
+        result = board.isCheck(Team.BLACK)
+        
+        self.assertEqual(result, False)
+
 
 if __name__ == '__main__':
     unittest.main()

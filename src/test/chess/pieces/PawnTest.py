@@ -1,16 +1,17 @@
 import unittest
 from chess.pieces.Pawn import Pawn
+from chess.pieces.Piece import Team
 
 class PawnTest(unittest.TestCase):
 
     def test_make_white_pawn(self):
-        piece = Pawn("white")
+        piece = Pawn(Team.WHITE)
         
         self.assertEqual(piece.image, "p")
 
 
     def test_get_distances_white(self):
-        pawn = Pawn("white")
+        pawn = Pawn(Team.WHITE)
 
         distances = pawn.getDistances()
 
@@ -18,7 +19,7 @@ class PawnTest(unittest.TestCase):
 
 
     def test_get_distances_black(self):
-        pawn = Pawn("black")
+        pawn = Pawn(Team.BLACK)
 
         distances = pawn.getDistances()
 
@@ -26,7 +27,7 @@ class PawnTest(unittest.TestCase):
 
 
     def test_already_move(self):
-        pawn = Pawn("white")
+        pawn = Pawn(Team.WHITE)
         pawn.move()
 
         distances = pawn.getDistances()

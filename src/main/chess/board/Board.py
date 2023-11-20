@@ -5,6 +5,7 @@ from chess.pieces.Knight import Knight
 from chess.pieces.King import King
 from chess.pieces.Queen import Queen
 from chess.pieces.NonePiece import NonePiece
+from chess.pieces.Piece import Team
 from .Position import Position
 from .Positions import Positions
 
@@ -12,6 +13,7 @@ class Board:
 
     def __init__(self, shouldSetup=True):
         self.board = {}
+        self.kingPosition = {}
         self.initBoard()
         if (shouldSetup):
             self.setPieces()
@@ -23,20 +25,24 @@ class Board:
         for rank in ranks:
             for file in files:
                 self.setPiece(Position(file, rank))
+        self.kingPosition[Team.WHITE] = Position.new("e1")
+        self.kingPosition[Team.BLACK] = Position.new("e8")
 
 
     def setPieces(self):
         files = [chr(file) for file in range(97, 105)]
         pieces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
         for i in range(0,8):
-            self.setPiece(Position(files[i], "8"), pieces[i]("black"))
-            self.setPiece(Position(files[i], "7"), Pawn("black"))
-            self.setPiece(Position(files[i], "2"), Pawn("white"))
-            self.setPiece(Position(files[i], "1"), pieces[i]("white"))
+            self.setPiece(Position(files[i], "8"), pieces[i](Team.BLACK))
+            self.setPiece(Position(files[i], "7"), Pawn(Team.BLACK))
+            self.setPiece(Position(files[i], "2"), Pawn(Team.WHITE))
+            self.setPiece(Position(files[i], "1"), pieces[i](Team.WHITE))
 
 
     def setPiece(self, position, piece=NonePiece()):
         self.board[position.get()] = piece
+        if (piece.isIt(King)):
+            self.kingPosition[piece.team] = position
 
 
     def getBoard(self):
@@ -65,6 +71,8 @@ class Board:
         currentPiece = self.getPiece(currentPosition)
         self.setPiece(currentPosition)
         self.setPiece(targetPosition, currentPiece)
+        if (currentPiece.isIt(King)):
+            self.kingPosition[currentPiece.team] = targetPosition
         currentPiece.move()
 
 
@@ -112,10 +120,9 @@ class Board:
             return False
         
         piece = self.getPiece(currentPosition)
-        condition = self.isMovableBasic
         if (piece.isIt(Pawn)):
-            condition = self.isMovablePawn
-        return condition(currentPosition, targetPosition)
+            return self.isMovablePawn(currentPosition, targetPosition)
+        return self.isMovableBasic(currentPosition, targetPosition)
 
 
     def isMovableBasic(self, currentPosition, targetPosition):
@@ -137,3 +144,18 @@ class Board:
             return targetPiece.isNone()
         
         return targetPiece.isEnemy(currentPiece)
+
+
+    def isCheck(self, team):
+        positions = self.getPositionsByTeam(team.getEnemy())
+        kingPosition = self.kingPosition[team]
+        
+        return any(self.canMove(position, kingPosition) for position in positions)
+    
+
+    def getPositionsByTeam(self, team):
+        lambdaFunction = lambda item: item[1].isWhite()
+        if (team.isBlack()):
+            lambdaFunction = lambda item: item[1].isBlack()
+        points = filter(lambdaFunction, self.board.items())
+        return list(map(lambda point: Position.new(point[0]), points))
