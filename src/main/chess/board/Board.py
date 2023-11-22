@@ -8,6 +8,7 @@ from chess.pieces.NonePiece import NonePiece
 from chess.pieces.Piece import Team
 from .Position import Position
 from .Positions import Positions
+import copy
 
 class Board:
 
@@ -102,11 +103,13 @@ class Board:
         nextPosition = position.move(distance)
 
         while (self.isContinuousMovable(nextPosition) and isDirection):
-            positions.append(nextPosition)
+            if (not self.isCheckAfterMove(position, nextPosition)):
+                positions.append(nextPosition)
             nextPosition = nextPosition.move(distance)
         
         if (self.isMovable(position, nextPosition)):
-            positions.append(nextPosition)
+            if (not self.isCheckAfterMove(position, nextPosition)):
+                positions.append(nextPosition)
 
         return positions
     
@@ -144,13 +147,21 @@ class Board:
             return targetPiece.isNone()
         
         return targetPiece.isEnemy(currentPiece)
+    
+
+    def isCheckAfterMove(self, currentPosition, targetPosition):
+        board = copy.deepcopy(self)
+        currentPiece = board.getPiece(currentPosition)
+        board.setPiece(currentPosition)
+        board.setPiece(targetPosition, currentPiece)
+        return board.isCheck(currentPiece.team)
 
 
     def isCheck(self, team):
         positions = self.getPositionsByTeam(team.getEnemy())
         kingPosition = self.kingPosition[team]
         
-        return any(self.canMove(position, kingPosition) for position in positions)
+        return any(self.canMoveExcludingCheck(position, kingPosition) for position in positions)
     
 
     def getPositionsByTeam(self, team):
@@ -159,3 +170,19 @@ class Board:
             lambdaFunction = lambda item: item[1].isBlack()
         points = filter(lambdaFunction, self.board.items())
         return list(map(lambda point: Position.new(point[0]), points))
+    
+    
+    def canMoveExcludingCheck(self, currentPosition, targetPosition):
+        piece = self.getPiece(currentPosition)
+        distances = piece.getDistances()
+
+        result = currentPosition.getDistance(targetPosition) in distances
+        
+        direction = currentPosition.getDirection(targetPosition)
+        if (direction in piece.getDirections()):
+            nextPosition = currentPosition.move(direction)
+            while (nextPosition != targetPosition and self.isContinuousMovable(nextPosition)):
+                nextPosition = nextPosition.move(direction)
+            result = result or nextPosition == targetPosition
+
+        return result

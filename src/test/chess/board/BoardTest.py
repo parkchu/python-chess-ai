@@ -142,12 +142,47 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(result, True)
 
     
-    def test_is_check(self):
+    def test_is_not_check(self):
         board = Board()
 
         result = board.isCheck(Team.BLACK)
         
         self.assertEqual(result, False)
+
+    
+    def test_is_check_after_move(self):
+        board = Board(False)
+        blackKingPosition = Position.new("a8")
+        blackKing = King(Team.BLACK)
+        whiteQueenPositoin = Position.new("b1")
+        whiteQueen = Queen(Team.WHITE)
+        board.setPiece(blackKingPosition, blackKing)
+        board.setPiece(whiteQueenPositoin, whiteQueen)
+
+        result = board.isCheckAfterMove(blackKingPosition, blackKingPosition.move((1,0)))
+
+        self.assertEqual(result, True)
+
+    
+    def test_is_not_check_after_move(self):
+        board = Board()
+        blackPawnPosition = Position.new("a7")
+        movablePositon = Position.new("a6")
+
+        result = board.isCheckAfterMove(blackPawnPosition, movablePositon)
+        
+        self.assertEqual(result, False)
+
+
+    def test_is_check_after_move_not_moving(self):
+        board = Board()
+        blackPawnPosition = Position.new("a7")
+        movablePositon = Position.new("a6")
+        board.isCheckAfterMove(blackPawnPosition, movablePositon)
+
+        piece = board.getPiece(movablePositon)
+        
+        self.assertEqual(piece.isNone(), True)
 
 
 if __name__ == '__main__':
