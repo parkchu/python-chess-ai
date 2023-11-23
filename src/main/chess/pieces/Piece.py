@@ -50,6 +50,14 @@ class Piece:
         return self.directions
     
 
+    def containsDistance(self, distance):
+        return distance in self.distances
+    
+
+    def containsDirection(self, direction):
+        return direction in self.directions
+    
+
 class Team(Enum):
     WHITE = "white"
     BLACK = "black"

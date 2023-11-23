@@ -108,8 +108,7 @@ class Board:
             nextPosition = nextPosition.move(distance)
         
         if (self.isMovable(position, nextPosition)):
-            if (not self.isCheckAfterMove(position, nextPosition)):
-                positions.append(nextPosition)
+            positions.append(nextPosition)
 
         return positions
     
@@ -119,7 +118,7 @@ class Board:
     
 
     def isMovable(self, currentPosition, targetPosition):
-        if (not targetPosition.isAvailable()):
+        if (not targetPosition.isAvailable() or self.isCheckAfterMove(currentPosition, targetPosition)):
             return False
         
         piece = self.getPiece(currentPosition)
@@ -174,15 +173,14 @@ class Board:
     
     def canMoveExcludingCheck(self, currentPosition, targetPosition):
         piece = self.getPiece(currentPosition)
-        distances = piece.getDistances()
-
-        result = currentPosition.getDistance(targetPosition) in distances
-        
+        distance = currentPosition.getDistance(targetPosition)
         direction = currentPosition.getDirection(targetPosition)
-        if (direction in piece.getDirections()):
-            nextPosition = currentPosition.move(direction)
-            while (nextPosition != targetPosition and self.isContinuousMovable(nextPosition)):
-                nextPosition = nextPosition.move(direction)
-            result = result or nextPosition == targetPosition
 
-        return result
+        if (not piece.containsDirection(direction)):
+            return piece.containsDistance(distance)
+        
+        nextPosition = currentPosition.move(direction)
+        while (nextPosition != targetPosition and self.isContinuousMovable(nextPosition)):
+            nextPosition = nextPosition.move(direction)
+
+        return piece.containsDistance(distance) or nextPosition == targetPosition

@@ -185,5 +185,20 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(piece.isNone(), True)
 
 
+    def test_get_movable_positions_when_is_check_after_move(self):
+        board = Board(False)
+        blackKingPosition = Position.new("a8")
+        blackKing = King(Team.BLACK)
+        whiteQueenPositoin = Position.new("b1")
+        whiteQueen = Queen(Team.WHITE)
+        board.setPiece(blackKingPosition, blackKing)
+        board.setPiece(whiteQueenPositoin, whiteQueen)
+
+        positions = board.getMovablePositions(blackKingPosition)
+
+        movablePositions = ["a7"]
+        self.assertEqual(positions.getToString(), movablePositions)
+
+
 if __name__ == '__main__':
     unittest.main()
