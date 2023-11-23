@@ -132,10 +132,10 @@ class BoardTest(unittest.TestCase):
         board = Board(False)
         blackKingPosition = Position.new("a8")
         blackKing = King(Team.BLACK)
-        whiteQueenPositoin = Position.new("a1")
+        whiteQueenPosition = Position.new("a1")
         whiteQueen = Queen(Team.WHITE)
         board.setPiece(blackKingPosition, blackKing)
-        board.setPiece(whiteQueenPositoin, whiteQueen)
+        board.setPiece(whiteQueenPosition, whiteQueen)
 
         result = board.isCheck(Team.BLACK)
 
@@ -154,10 +154,10 @@ class BoardTest(unittest.TestCase):
         board = Board(False)
         blackKingPosition = Position.new("a8")
         blackKing = King(Team.BLACK)
-        whiteQueenPositoin = Position.new("b1")
+        whiteQueenPosition = Position.new("b1")
         whiteQueen = Queen(Team.WHITE)
         board.setPiece(blackKingPosition, blackKing)
-        board.setPiece(whiteQueenPositoin, whiteQueen)
+        board.setPiece(whiteQueenPosition, whiteQueen)
 
         result = board.isCheckAfterMove(blackKingPosition, blackKingPosition.move((1,0)))
 
@@ -189,15 +189,46 @@ class BoardTest(unittest.TestCase):
         board = Board(False)
         blackKingPosition = Position.new("a8")
         blackKing = King(Team.BLACK)
-        whiteQueenPositoin = Position.new("b1")
+        whiteQueenPosition = Position.new("b1")
         whiteQueen = Queen(Team.WHITE)
         board.setPiece(blackKingPosition, blackKing)
-        board.setPiece(whiteQueenPositoin, whiteQueen)
+        board.setPiece(whiteQueenPosition, whiteQueen)
 
         positions = board.getMovablePositions(blackKingPosition)
 
         movablePositions = ["a7"]
         self.assertEqual(positions.getToString(), movablePositions)
+
+    
+    def test_checkmate(self):
+        board = Board(False)
+        blackKingPosition = Position.new("a8")
+        blackKing = King(Team.BLACK)
+        whiteQueenPosition = Position.new("a7")
+        whiteQueen = Queen(Team.WHITE)
+        whitePawnPosition = Position.new("b6")
+        whitePawn = Pawn(Team.WHITE)
+        board.setPiece(blackKingPosition, blackKing)
+        board.setPiece(whiteQueenPosition, whiteQueen)
+        board.setPiece(whitePawnPosition, whitePawn)
+
+        result = board.isCheckmate(Team.BLACK)
+
+        self.assertEqual(result, True)
+
+
+    def test_is_not_checkmate(self):
+        board = Board(False)
+        blackKingPosition = Position.new("a8")
+        blackKing = King(Team.BLACK)
+        whiteQueenPosition = Position.new("a7")
+        whiteQueen = Queen(Team.WHITE)
+        board.setPiece(blackKingPosition, blackKing)
+        board.setPiece(whiteQueenPosition, whiteQueen)
+
+        result = board.isCheckmate(Team.BLACK)
+
+        self.assertEqual(result, False)
 
 
 if __name__ == '__main__':

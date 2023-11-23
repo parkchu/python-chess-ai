@@ -148,6 +148,14 @@ class Board:
         return targetPiece.isEnemy(currentPiece)
     
 
+    def isCheckmate(self, team):
+        positions = self.getPositionsByTeam(team)
+        movablePositons = Positions.empty()
+        for position in positions.positions:
+            movablePositons.appendAll(self.getMovablePositions(position))
+        return movablePositons.isEmpty()
+
+
     def isCheckAfterMove(self, currentPosition, targetPosition):
         board = copy.deepcopy(self)
         currentPiece = board.getPiece(currentPosition)
@@ -160,7 +168,7 @@ class Board:
         positions = self.getPositionsByTeam(team.getEnemy())
         kingPosition = self.kingPosition[team]
         
-        return any(self.canMoveExcludingCheck(position, kingPosition) for position in positions)
+        return any(self.canMoveExcludingCheck(position, kingPosition) for position in positions.positions)
     
 
     def getPositionsByTeam(self, team):
@@ -168,7 +176,7 @@ class Board:
         if (team.isBlack()):
             lambdaFunction = lambda item: item[1].isBlack()
         points = filter(lambdaFunction, self.board.items())
-        return list(map(lambda point: Position.new(point[0]), points))
+        return Positions(list(map(lambda point: Position.new(point[0]), points)))
     
     
     def canMoveExcludingCheck(self, currentPosition, targetPosition):
