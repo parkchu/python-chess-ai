@@ -45,3 +45,7 @@ class Position(object):
         if (value > 0):
             return 1
         return 0
+    
+
+    def isEnd(self, team):
+        return self.rank == team.getEndRank()

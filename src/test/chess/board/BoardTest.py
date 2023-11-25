@@ -5,6 +5,9 @@ from chess.pieces.Pawn import Pawn
 from chess.pieces.King import King
 from chess.pieces.Queen import Queen
 from chess.pieces.Piece import Team
+from chess.util.exceptions import PromotionPositionException
+from chess.util.exceptions import PromotionSourceException
+from chess.util.exceptions import PromotionTargetException
 
 class BoardTest(unittest.TestCase):
 
@@ -229,6 +232,54 @@ class BoardTest(unittest.TestCase):
         result = board.isCheckmate(Team.BLACK)
 
         self.assertEqual(result, False)
+
+    
+    def test_pawn_promotion(self):
+        board = Board(False)
+        whitePawnPosition = Position.new("a8")
+        whitePawn = Pawn(Team.WHITE)
+        board.setPiece(whitePawnPosition, whitePawn)
+
+        board.promotionPawn(whitePawnPosition, Queen)
+
+        whiteQueen = board.getPiece(whitePawnPosition)
+        self.assertEqual(type(whiteQueen), Queen)
+
+
+    def test_pawn_promotion_is_not_positon(self):
+        board = Board(False)
+        whiteQueenPosition = Position.new("a7")
+        whiteQueen = Queen(Team.WHITE)
+        board.setPiece(whiteQueenPosition, whiteQueen)
+
+        try:
+            board.promotionPawn(whiteQueenPosition, Queen)
+        except Exception as exception:
+            self.assertEqual(type(exception), PromotionPositionException)
+
+    
+    def test_pawn_promotion_is_not_pawn(self):
+        board = Board(False)
+        whiteQueenPosition = Position.new("a8")
+        whiteQueen = Queen(Team.WHITE)
+        board.setPiece(whiteQueenPosition, whiteQueen)
+
+        try:
+            board.promotionPawn(whiteQueenPosition, Queen)
+        except Exception as exception:
+            self.assertEqual(type(exception), PromotionSourceException)
+
+
+    def test_pawn_promotion_is_not_pawn(self):
+        board = Board(False)
+        whitePawnPosition = Position.new("a8")
+        whitePawn = Pawn(Team.WHITE)
+        board.setPiece(whitePawnPosition, whitePawn)
+
+        try:
+            board.promotionPawn(whitePawnPosition, King)
+        except Exception as exception:
+            self.assertEqual(type(exception), PromotionTargetException)
 
 
 if __name__ == '__main__':

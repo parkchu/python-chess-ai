@@ -1,3 +1,4 @@
+import copy
 from chess.pieces.Pawn import Pawn
 from chess.pieces.Rook import Rook
 from chess.pieces.Bishop import Bishop
@@ -6,9 +7,12 @@ from chess.pieces.King import King
 from chess.pieces.Queen import Queen
 from chess.pieces.NonePiece import NonePiece
 from chess.pieces.Piece import Team
+from chess.util.exceptions import IllegalMovementException
+from chess.util.exceptions import PromotionPositionException
+from chess.util.exceptions import PromotionSourceException
+from chess.util.exceptions import PromotionTargetException
 from .Position import Position
 from .Positions import Positions
-import copy
 
 class Board:
 
@@ -68,7 +72,7 @@ class Board:
 
     def move(self, currentPosition, targetPosition):
         if (not self.canMove(currentPosition, targetPosition)):
-            raise Exception("움직일 수 없는 위치 입니다.")
+            raise IllegalMovementException()
         currentPiece = self.getPiece(currentPosition)
         self.setPiece(currentPosition)
         self.setPiece(targetPosition, currentPiece)
@@ -192,3 +196,18 @@ class Board:
             nextPosition = nextPosition.move(direction)
 
         return piece.containsDistance(distance) or nextPosition == targetPosition
+    
+
+    def promotionPawn(self, position, pieceType):
+        piece = self.getPiece(position)
+
+        if (not position.isEnd(piece.team)):
+            raise PromotionPositionException()
+
+        if (not piece.isIt(Pawn)):
+            raise PromotionSourceException()
+        
+        if (pieceType in [Pawn, King]):
+            raise PromotionTargetException()
+        
+        self.setPiece(position, pieceType(piece.team))

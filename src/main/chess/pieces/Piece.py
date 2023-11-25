@@ -59,22 +59,27 @@ class Piece:
     
 
 class Team(Enum):
-    WHITE = "white"
-    BLACK = "black"
-    NONE = "none"
+    WHITE = "8"
+    BLACK = "1"
+    NONE = "0"
 
     def isWhite(self):
-        return self.value == "white"
+        return self == Team.WHITE
     
 
     def isBlack(self):
-        return self.value == "black"
+        return self == Team.BLACK
     
 
     def isNone(self):
-        return self.value == "none"
+        return self == Team.NONE
     
+
     def getEnemy(self):
         if (self.isWhite()):
             return Team.BLACK
         return Team.WHITE
+
+
+    def getEndRank(self):
+        return self.value
