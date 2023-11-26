@@ -62,6 +62,10 @@ class Piece:
         return False
     
 
+    def getEnemy(self):
+        return self.team.getEnemy()
+    
+
 class Team(Enum):
     WHITE = "8"
     BLACK = "1"
@@ -87,3 +91,9 @@ class Team(Enum):
 
     def getEndRank(self):
         return self.value
+    
+    
+    def get(team):
+        if (team == "white"):
+            return Team.WHITE
+        return Team.BLACK

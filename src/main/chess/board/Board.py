@@ -19,6 +19,7 @@ class Board:
     def __init__(self, shouldSetup=True):
         self.board = {}
         self.kingPosition = {}
+        self.turn = Team.WHITE
         self.initBoard()
         if (shouldSetup):
             self.setPieces()
@@ -80,7 +81,8 @@ class Board:
             self.castling(targetPosition, currentPosition.getDistance(targetPosition))
             self.kingPosition[currentPiece.team] = targetPosition
         currentPiece.move()
-
+        self.turn = self.turn.getEnemy()
+            
 
     def canMove(self, currentPosition, targetPosition):
         movablePositions = self.getMovablePositions(currentPosition)
@@ -245,4 +247,16 @@ class Board:
         if (pieceType in [Pawn, King]):
             raise PromotionTargetException()
         
-        self.setPiece(position, pieceType(piece.team))    
+        self.setPiece(position, pieceType(piece.team))
+
+    
+    def isPromotion(self, position):
+        piece = self.getPiece(position)
+
+        return piece.isIt(Pawn) and position.isEnd(piece.team)
+
+
+    def isCastling(self, currentPosition, targetPosition):
+        piece = self.getPiece(currentPosition)
+        distance = currentPosition.getDistance(targetPosition)
+        return piece.isCastling(distance)

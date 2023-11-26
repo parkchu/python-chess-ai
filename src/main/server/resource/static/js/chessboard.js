@@ -1,6 +1,20 @@
 const APIURL = "https://effective-spork-wr76pqqq7vvw2g66r-8000.app.github.dev";
 const board = document.querySelector("#boards tbody");
 const turnLabel = document.querySelector("h1.turn");
+const pieceTypes = {
+    "white": {
+        "Queen": "&#9813;",
+        "Rook": "&#9814;",
+        "Bishop": "&#9815;",
+        "Knight": "&#9816;",
+    },
+    "black": {
+        "Queen": "&#9819;",
+        "Rook": "&#9820;",
+        "Bishop": "&#9821;",
+        "Knight": "&#9822;",
+    }
+}
 var currentPoint
 var turn
 
@@ -115,10 +129,14 @@ function deleteMovablePoint(piece) {
 
 function movePiece(targetPoint) {
     requestMove(currentPoint.id, targetPoint.id);
+    move(currentPoint, targetPoint)
+    changeTurn();
+}
+
+function move(currentPoint, targetPoint) {
     targetPoint.innerHTML = currentPoint.innerHTML;
     currentPoint.innerHTML = makeEmptyPiece();
     removeClicked(targetPoint);
-    changeTurn();
 }
 
 function requestMove(currentPosition, targetPosition) {
@@ -130,7 +148,7 @@ function requestMove(currentPosition, targetPosition) {
     });
     request(url, method, body)
     .then((response) => response.json())
-    .then((data) => console.log(data));
+    .then((data) => processAfterMove(data));
 }
 
 function request(url, method, body = null) {
@@ -141,6 +159,99 @@ function request(url, method, body = null) {
         },
         body: body
     });
+}
+
+function processAfterMove(response) {
+    requestCheck("white");
+    requestCheck("black");
+    promote(response);
+    castling(response);
+}
+
+function requestCheck(team) {
+    url = `${APIURL}/api/chess/check/${team}`;
+    method = "GET";
+    request(url, method)
+    .then((response) => response.json())
+    .then((data) => check(data));
+}
+
+function check(response) {
+    piece = board.querySelector(`#${response.kingPosition}`).children[0];
+    message = "";
+    if (response.isCheck) {
+        piece.classList.add("check");
+        message = `${turn} 팀이 체크메이트 당했습니다!`
+    } else {
+        piece.classList.remove("check")
+        message = "스테일메이트 입니다!"
+    }
+    checkmate(response, message)
+}
+
+function checkmate(response, message) {
+    if (response.isCheckmate) {
+        alert(message)
+    }
+}
+
+function promote(response) {
+    if (response.isPromotion) {
+        position = response.targetPosition;
+        pieceType = prompt("승급 시킬 기물을 입력해주세요", "Queen");
+        requestPromote(position, pieceType)
+        requestCheck(turn);
+    }
+}
+
+function requestPromote(position, pieceType) {
+    url = `${APIURL}/api/chess/promote`;
+    method = "POST";
+    body = JSON.stringify({
+        position: position,
+        pieceType: pieceType,
+    });
+    request(url, method, body)
+    .then((response) => response.json())
+    .then((data) => changePiece(data));
+}
+
+function changePiece(response) {
+    position = response.position;
+    piece = board.querySelector(`#${position}`).children[0];
+    team = "white";
+    if (position[1] == "1") {
+        team = "black";
+    }
+    pieceType = response.pieceType;
+    piece.innerHTML = pieceTypes[team][pieceType];
+}
+
+function castling(response) {
+    if (response.isCastling) {
+        position = response.targetPosition;
+        positions = getCastlingPositions(position);
+        rookPoint = board.querySelector(`#${positions.rookPosition}`);
+        movePoint = board.querySelector(`#${positions.movePosition}`);
+        move(rookPoint, movePoint);
+        requestCheck(turn);
+    }
+}
+
+function getCastlingPositions(position) {
+    file = position[0];
+    rank = position[1];
+    rookPosition = "a" + rank;
+    movePosition = "d" + rank;
+    if (file == "g") {
+        rookPosition = "h" + rank;
+        movePosition = "f" + rank;
+    }
+    positions = {
+        rookPosition: rookPosition,
+        movePosition: movePosition
+    }
+    return positions
 }
 
 function makeEmptyPiece() {
