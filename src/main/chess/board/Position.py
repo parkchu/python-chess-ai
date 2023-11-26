@@ -49,3 +49,9 @@ class Position(object):
 
     def isEnd(self, team):
         return self.rank == team.getEndRank()
+    
+
+    def getCastlingRookPosition(self):
+        if (self.file == "g"):
+            return Position("h", self.rank)
+        return Position("a", self.rank)

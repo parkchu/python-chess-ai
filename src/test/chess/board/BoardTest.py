@@ -5,9 +5,11 @@ from chess.pieces.Pawn import Pawn
 from chess.pieces.King import King
 from chess.pieces.Queen import Queen
 from chess.pieces.Piece import Team
+from chess.pieces.Rook import Rook
 from chess.util.exceptions import PromotionPositionException
 from chess.util.exceptions import PromotionSourceException
 from chess.util.exceptions import PromotionTargetException
+from chess.util.exceptions import IllegalMovementException
 
 class BoardTest(unittest.TestCase):
 
@@ -152,6 +154,20 @@ class BoardTest(unittest.TestCase):
         
         self.assertEqual(result, False)
 
+
+    def test_is_not_check_by_pawn(self):
+        board = Board(False)
+        blackKingPosition = Position.new("a8")
+        blackKing = King(Team.BLACK)
+        whitePawnPosition = Position.new("a7")
+        whitePawn = Pawn(Team.WHITE)
+        board.setPiece(blackKingPosition, blackKing)
+        board.setPiece(whitePawnPosition, whitePawn)
+
+        result = board.isCheck(Team.BLACK)
+
+        self.assertEqual(result, False)
+
     
     def test_is_check_after_move(self):
         board = Board(False)
@@ -240,7 +256,7 @@ class BoardTest(unittest.TestCase):
         whitePawn = Pawn(Team.WHITE)
         board.setPiece(whitePawnPosition, whitePawn)
 
-        board.promotionPawn(whitePawnPosition, Queen)
+        board.promote(whitePawnPosition, Queen)
 
         whiteQueen = board.getPiece(whitePawnPosition)
         self.assertEqual(type(whiteQueen), Queen)
@@ -253,7 +269,7 @@ class BoardTest(unittest.TestCase):
         board.setPiece(whiteQueenPosition, whiteQueen)
 
         try:
-            board.promotionPawn(whiteQueenPosition, Queen)
+            board.promote(whiteQueenPosition, Queen)
         except Exception as exception:
             self.assertEqual(type(exception), PromotionPositionException)
 
@@ -265,7 +281,7 @@ class BoardTest(unittest.TestCase):
         board.setPiece(whiteQueenPosition, whiteQueen)
 
         try:
-            board.promotionPawn(whiteQueenPosition, Queen)
+            board.promote(whiteQueenPosition, Queen)
         except Exception as exception:
             self.assertEqual(type(exception), PromotionSourceException)
 
@@ -277,9 +293,44 @@ class BoardTest(unittest.TestCase):
         board.setPiece(whitePawnPosition, whitePawn)
 
         try:
-            board.promotionPawn(whitePawnPosition, King)
+            board.promote(whitePawnPosition, King)
         except Exception as exception:
             self.assertEqual(type(exception), PromotionTargetException)
+
+
+    def test_castling(self):
+        board = Board(False)
+        whiteKingPosition = Position.new("e1")
+        whiteKing = King(Team.WHITE)
+        whiteRookPosition = Position.new("h1")
+        whiteRook = Rook(Team.WHITE)
+        board.setPiece(whiteKingPosition, whiteKing)
+        board.setPiece(whiteRookPosition, whiteRook)
+
+        board.move(whiteKingPosition, whiteKingPosition.move((2, 0)))
+
+        afterKingPosition = Position.new("g1")
+        afterRookPosition = Position.new("f1")
+        self.assertEqual(board.getPiece(afterKingPosition), whiteKing)
+        self.assertEqual(board.getPiece(afterRookPosition), whiteRook)
+
+    
+    def test_can_not_castling(self):
+        board = Board(False)
+        whiteKingPosition = Position.new("e1")
+        whiteKing = King(Team.WHITE)
+        whiteRookPosition = Position.new("h1")
+        whiteRook = Rook(Team.WHITE)
+        blackQueenPosition = Position.new("f3")
+        blackQueen = Queen(Team.BLACK)
+        board.setPiece(whiteKingPosition, whiteKing)
+        board.setPiece(whiteRookPosition, whiteRook)
+        board.setPiece(blackQueenPosition, blackQueen)
+
+        try:
+            board.move(whiteKingPosition, whiteKingPosition.move((2, 0)))
+        except Exception as exception:
+            self.assertEqual(type(exception), IllegalMovementException)
 
 
 if __name__ == '__main__':

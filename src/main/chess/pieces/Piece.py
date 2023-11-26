@@ -58,6 +58,10 @@ class Piece:
         return direction in self.directions
     
 
+    def isCastling(self, distance):
+        return False
+    
+
 class Team(Enum):
     WHITE = "8"
     BLACK = "1"

@@ -77,6 +77,7 @@ class Board:
         self.setPiece(currentPosition)
         self.setPiece(targetPosition, currentPiece)
         if (currentPiece.isIt(King)):
+            self.castling(targetPosition, currentPosition.getDistance(targetPosition))
             self.kingPosition[currentPiece.team] = targetPosition
         currentPiece.move()
 
@@ -126,16 +127,15 @@ class Board:
             return False
         
         piece = self.getPiece(currentPosition)
+
         if (piece.isIt(Pawn)):
             return self.isMovablePawn(currentPosition, targetPosition)
+        
+        if (piece.isCastling(currentPosition.getDistance(targetPosition))):
+            return self.canCastling(currentPosition, targetPosition)
+        
         return self.isMovableBasic(currentPosition, targetPosition)
 
-
-    def isMovableBasic(self, currentPosition, targetPosition):
-        currentPiece = self.getPiece(currentPosition)
-        targetPiece = self.getPiece(targetPosition)
-        return targetPiece.isNone() or targetPiece.isEnemy(currentPiece)
-    
 
     def isMovablePawn(self, currentPosition, targetPosition):
         currentPiece = self.getPiece(currentPosition)
@@ -151,6 +151,41 @@ class Board:
         
         return targetPiece.isEnemy(currentPiece)
     
+
+    def canCastling(self, kingPosition, targetPosition):
+        king = self.getPiece(kingPosition)
+        if (self.isCheck(king.team)):
+            return False
+        
+        direction = kingPosition.getDirection(targetPosition)
+        nextPosition = kingPosition
+        while (nextPosition != targetPosition):
+            nextPosition = nextPosition.move(direction)
+            if (self.isCheckAfterMove(kingPosition, nextPosition)):
+                return False
+
+        rookPosition = targetPosition.getCastlingRookPosition()
+        rook = self.getPiece(rookPosition)
+        return rook.isFirstMove and self.canMoveExcludingCheck(rookPosition, kingPosition.move(direction))
+
+
+    def isMovableBasic(self, currentPosition, targetPosition):
+        currentPiece = self.getPiece(currentPosition)
+        targetPiece = self.getPiece(targetPosition)
+        return targetPiece.isNone() or targetPiece.isEnemy(currentPiece)
+
+
+    def castling(self, kingPosition, distance):
+        king = self.getPiece(kingPosition)
+
+        if (king.isCastling(distance)):
+            rookPosition = kingPosition.getCastlingRookPosition()
+            position = kingPosition.move(rookPosition.getDirection(kingPosition))
+            rook = self.getPiece(rookPosition)
+            self.setPiece(rookPosition)
+            self.setPiece(position, rook)
+            rook.move()
+
 
     def isCheckmate(self, team):
         positions = self.getPositionsByTeam(team)
@@ -198,7 +233,7 @@ class Board:
         return piece.containsDistance(distance) or nextPosition == targetPosition
     
 
-    def promotionPawn(self, position, pieceType):
+    def promote(self, position, pieceType):
         piece = self.getPiece(position)
 
         if (not position.isEnd(piece.team)):
@@ -210,4 +245,4 @@ class Board:
         if (pieceType in [Pawn, King]):
             raise PromotionTargetException()
         
-        self.setPiece(position, pieceType(piece.team))
+        self.setPiece(position, pieceType(piece.team))    
