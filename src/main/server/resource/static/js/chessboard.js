@@ -1,7 +1,7 @@
 const APIURL = "https://effective-spork-wr76pqqq7vvw2g66r-8000.app.github.dev";
 const board = document.querySelector("#boards tbody");
 const turnLabel = document.querySelector("h1.turn");
-const pieceTypes = {
+const PIECE_ICONS = {
     "white": {
         "Queen": "&#9813;",
         "Rook": "&#9814;",
@@ -15,6 +15,7 @@ const pieceTypes = {
         "Knight": "&#9822;",
     }
 }
+const PROMOTION_PIECE_TYPES = ["Queen", "Rook", "Bishop", "Knight"]
 var currentPoint
 var turn
 
@@ -198,10 +199,19 @@ function checkmate(response, message) {
 function promote(response) {
     if (response.isPromotion) {
         position = response.targetPosition;
-        pieceType = prompt("승급 시킬 기물을 입력해주세요", "Queen");
+        pieceType = getPromotionPieceType();
         requestPromote(position, pieceType)
         requestCheck(turn);
     }
+}
+
+function getPromotionPieceType() {
+    pieceType = prompt(`승급 시킬 기물을 입력해주세요 (${PROMOTION_PIECE_TYPES})`, "Queen");
+    if (PROMOTION_PIECE_TYPES.includes(pieceType)) {
+        return pieceType
+    }
+    alert(`${pieceType} 이란 기물은 없습니다.\n${PROMOTION_PIECE_TYPES} 중에서 입력해주세요.`)
+    return getPromotionPieceType()
 }
 
 function requestPromote(position, pieceType) {
@@ -224,7 +234,7 @@ function changePiece(response) {
         team = "black";
     }
     pieceType = response.pieceType;
-    piece.innerHTML = pieceTypes[team][pieceType];
+    piece.innerHTML = PIECE_ICONS[team][pieceType];
 }
 
 function castling(response) {
@@ -241,15 +251,15 @@ function castling(response) {
 function getCastlingPositions(position) {
     file = position[0];
     rank = position[1];
-    rookPosition = "a" + rank;
-    movePosition = "d" + rank;
+    rookFile = "a";
+    moveFile = "d";
     if (file == "g") {
-        rookPosition = "h" + rank;
-        movePosition = "f" + rank;
+        rookFile = "h";
+        moveFile = "f";
     }
     positions = {
-        rookPosition: rookPosition,
-        movePosition: movePosition
+        rookPosition: rookFile + rank,
+        movePosition: moveFile + rank
     }
     return positions
 }

@@ -23,19 +23,18 @@ def movePiece(request):
         isCastling = board.isCastling(currentPosition, targetPosition)
         board.move(currentPosition, targetPosition)
         Screen.showBoard(board)
-        isPromotion = board.isPromotion(targetPosition)
-        response = makeResponse(currentPosition, targetPosition, isCastling, isPromotion)
+        response = makeResponse(currentPosition, targetPosition, isCastling)
         return JsonResponse(response, status=200)
     return JsonResponse(serializer.errors, status=400)
 
 
-def makeResponse(currentPosition, targetPosition, isCastling, isPromotion):
+def makeResponse(currentPosition, targetPosition, isCastling):
     response = {
         "currentPosition": currentPosition.get(),
         "targetPosition": targetPosition.get(),
-        "isPromotion": isPromotion,
+        "isPromotion": board.isPromotion(targetPosition),
         "isCastling": isCastling
-        }
+    }
     return response
 
 
