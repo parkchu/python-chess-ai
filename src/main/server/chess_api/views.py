@@ -41,7 +41,10 @@ def makeResponse(currentPosition, targetPosition, isCastling):
 @api_view(['GET'])
 def getMovablePositions(request, position):
     positions = board.getMovablePositions(Position.new(position))
-    return JsonResponse(positions.getToString(), safe=False, status=200)
+    response = {
+        "positions": positions.getToString()
+    }
+    return JsonResponse(response, status=200)
 
 
 @api_view(['POST'])

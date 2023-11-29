@@ -77,7 +77,7 @@ function requestGetMovablePositions() {
     method = "GET";
     request(url, method)
     .then((response) => response.json())
-    .then((data) => showMovablePoints(data));
+    .then((data) => showMovablePoints(data.positions));
 }
 
 function showMovablePoints(positions) {
