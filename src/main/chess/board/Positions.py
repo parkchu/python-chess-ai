@@ -38,3 +38,7 @@ class Positions:
 
     def getToString(self):
         return list(map(lambda position: position.get(), self.positions))
+    
+
+    def isEmpty(self):
+        return not self.positions

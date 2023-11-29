@@ -1,3 +1,5 @@
+from enum import Enum
+
 class Piece:
 
     def __init__(self, team, image):
@@ -15,15 +17,15 @@ class Piece:
     
 
     def isWhite(self):
-        return self.team == "white"
+        return self.team.isWhite()
     
 
     def isBlack(self):
-        return self.team == "black"
+        return self.team.isBlack()
     
     
     def isNone(self):
-        return self.team == None
+        return self.team.isNone()
     
 
     def isEnemy(self, piece):
@@ -46,3 +48,52 @@ class Piece:
 
     def getDirections(self):
         return self.directions
+    
+
+    def containsDistance(self, distance):
+        return distance in self.distances
+    
+
+    def containsDirection(self, direction):
+        return direction in self.directions
+    
+
+    def isCastling(self, distance):
+        return False
+    
+
+    def getEnemy(self):
+        return self.team.getEnemy()
+    
+
+class Team(Enum):
+    WHITE = "8"
+    BLACK = "1"
+    NONE = "0"
+
+    def isWhite(self):
+        return self == Team.WHITE
+    
+
+    def isBlack(self):
+        return self == Team.BLACK
+    
+
+    def isNone(self):
+        return self == Team.NONE
+    
+
+    def getEnemy(self):
+        if (self.isWhite()):
+            return Team.BLACK
+        return Team.WHITE
+
+
+    def getEndRank(self):
+        return self.value
+    
+    
+    def get(team):
+        if (team == "white"):
+            return Team.WHITE
+        return Team.BLACK

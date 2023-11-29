@@ -28,3 +28,7 @@ class Pawn(Piece):
         if (self.isWhite()):
             return (0, 2)
         return (0, -2)
+
+
+    def containsDistance(self, distance):
+        return distance in self.distances[1:]
