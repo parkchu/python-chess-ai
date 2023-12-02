@@ -3,19 +3,28 @@ const board = document.querySelector("#boards tbody");
 const turnLabel = document.querySelector("h1.turn");
 const PIECE_ICONS = {
     "white": {
+        "King": "&#9817;",
         "Queen": "&#9813;",
         "Rook": "&#9814;",
         "Bishop": "&#9815;",
         "Knight": "&#9816;",
+        "Pawn": "&#9817;"
     },
     "black": {
+        "King": "&#9818;",
         "Queen": "&#9819;",
         "Rook": "&#9820;",
         "Bishop": "&#9821;",
         "Knight": "&#9822;",
+        "Pawn": "&#9823;"
     }
 }
 const PROMOTION_PIECE_TYPES = ["Queen", "Rook", "Bishop", "Knight"]
+const TURN_MESSAGE = {
+    "white": "백이 둘 차례",
+    "black": "흑이 둘 차례"
+}
+const undoBtns = document.querySelectorAll(".undo-btn");
 var currentPoint
 var turn
 
@@ -23,6 +32,9 @@ function init() {
     currentPoint = null;
     turn = "white"
     board.addEventListener("click", clickBoard);
+    Array.from(undoBtns).forEach(btn => {
+        btn.addEventListener("click", requestUndo);
+    });
 }
 
 function clickBoard(event) {
@@ -268,14 +280,51 @@ function makeEmptyPiece() {
     return '<a href=""></a>';
 }
 
-function changeTurn() {
-    if (turn === "white") {
-        turn = "black";
-        turnLabel.innerHTML = '<span class="label label-default turn">흑이 둘 차례</span>';
-    } else { 
-        turn = "white";
-        turnLabel.innerHTML = '<span class="label label-default turn">백이 둘 차례</span>';
+function changeTurn(team=getEnemy(turn)) {
+    turn = team
+    turnLabel.innerHTML = `<span class="label label-default turn">${TURN_MESSAGE[team]}</span>`
+}
+
+function getEnemy(team) {
+    if (team === "white") {
+        return "black"
     }
+    return "white" 
+}
+
+function requestUndo(event) {
+    url = `${APIURL}/api/chess/undo`;
+    method = "POST";
+    team = event.target.getAttribute("data-team");
+    body = JSON.stringify({
+        team: team
+    });
+    request(url, method, body)
+    .then((response) => response.json())
+    .then((data) => undo(data));
+}
+
+function undo(response) {
+    notations = response.notations;
+    notations.forEach(notation => {
+        currentPiece = makePiece(notation.currentPiece);
+        targetPiece = makePiece(notation.targetPiece);
+        setPiece(notation.currentPosition, currentPiece);
+        setPiece(notation.targetPosition, targetPiece);
+    })
+    changeTurn(response.team);
+}
+
+function makePiece(piece) {
+    if (piece.pieceType == "NonePiece") {
+        return makeEmptyPiece()
+    }
+    return `<a href="" data-team="${piece.team}">${PIECE_ICONS[piece.team][piece.pieceType]}</a>`
+}
+
+function setPiece(position, piece) {
+    point = board.querySelector(`#${position}`);
+    point.innerHTML = piece;
 }
 
 init();

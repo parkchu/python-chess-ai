@@ -10,4 +10,8 @@ class MoveRequest(models.Model):
 class PromoteRequest(models.Model):
     position = models.CharField(max_length=2)
     pieceType = models.CharField(max_length=8)
+
+
+class UndoRequest(models.Model):
+    team = models.CharField(max_length=8)
     

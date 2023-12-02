@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from .serializers import MoveRequestSerializer
 from .serializers import PromoteRequestSerializer
+from .serializers import UndoRequestSerializer
 from rest_framework.parsers import JSONParser
 from home.views import board
 from chess.board.Position import Position
@@ -69,3 +70,20 @@ def isCheck(request, team):
         "kingPosition": board.kingPosition[team].get()
     }
     return JsonResponse(response, status=200)
+
+
+@api_view(['POST'])
+def undo(request):
+    data = JSONParser().parse(request)
+    serializer = UndoRequestSerializer(data=data)
+    if serializer.is_valid():
+        team = Team.get(serializer.data["team"])
+        notations = board.undo(team)
+        notations = list(map(lambda notation:notation.toDict(), notations))
+        response = {
+            "notations": notations,
+            "team": team.getType()
+        }
+        Screen.showBoard(board)
+        return JsonResponse(response, status=200)
+    return JsonResponse(serializer.errors, status=400)

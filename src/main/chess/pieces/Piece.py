@@ -64,6 +64,10 @@ class Piece:
 
     def getEnemy(self):
         return self.team.getEnemy()
+
+
+    def getType(self):
+        return type(self).__name__
     
 
 class Team(Enum):
@@ -97,3 +101,9 @@ class Team(Enum):
         if (team == "white"):
             return Team.WHITE
         return Team.BLACK
+    
+
+    def getType(self):
+        if (self.isWhite()):
+            return "white"
+        return "black"
