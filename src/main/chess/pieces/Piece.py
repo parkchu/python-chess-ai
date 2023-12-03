@@ -106,4 +106,6 @@ class Team(Enum):
     def getType(self):
         if (self.isWhite()):
             return "white"
-        return "black"
+        if (self.isBlack()):
+            return "black"
+        return "none"

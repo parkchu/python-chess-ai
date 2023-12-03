@@ -15,9 +15,9 @@ class Notations:
     def undo(self, team):
         if (team.isWhite()):
             self.checkUndo(self.white)
-            return self.undoByWhite()
+            return self.getUndoNotations(self.white, self.black, self.isLastMovementBlack())
         self.checkUndo(self.black)
-        return self.undoByBlack()
+        return self.getUndoNotations(self.black, self.white, self.isLastMovementWhite())
     
 
     def checkUndo(self, notations):
@@ -25,17 +25,25 @@ class Notations:
             raise IndexError("움직인 기물이 없으면 Undo 할 수 없습니다.")
 
 
-    def undoByWhite(self):
-        if (self.isLastMovementWhite()):
-            return [self.white.pop()]
-        return [self.black.pop(), self.white.pop()]
+    def getUndoNotations(self, ourNotations, enemyNotations, islastMovementEnemy):
+        notations = []
+        if (islastMovementEnemy):
+            notations += self.getLastNotation(enemyNotations)
+        notations += self.getLastNotation(ourNotations)
+        return notations
     
+
+    def getLastNotation(self, notations):
+        notation = notations.pop()
+        lastNotations = [notation]
+        if (notation.isCastling()):
+            lastNotations.append(notation.getCastlingNotation())
+        return lastNotations
+    
+
+    def isLastMovementBlack(self):
+        return len(self.black) == len(self.white)
+
 
     def isLastMovementWhite(self):
         return len(self.white) > len(self.black)
-
-
-    def undoByBlack(self):
-        if (self.isLastMovementWhite()):
-            return [self.white.pop(), self.black.pop()]
-        return [self.black.pop()]

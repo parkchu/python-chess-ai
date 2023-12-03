@@ -21,8 +21,6 @@ class Board:
     def __init__(self, shouldSetup=True):
         self.board = {}
         self.kingPosition = {}
-        self.turn = Team.WHITE
-        self.notations = Notations()
         self.initBoard()
         if (shouldSetup):
             self.setPieces()
@@ -36,6 +34,8 @@ class Board:
                 self.setPiece(Position(file, rank))
         self.kingPosition[Team.WHITE] = Position.new("e1")
         self.kingPosition[Team.BLACK] = Position.new("e8")
+        self.turn = Team.WHITE
+        self.notations = Notations()
 
 
     def setPieces(self):

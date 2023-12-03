@@ -3,7 +3,7 @@ const board = document.querySelector("#boards tbody");
 const turnLabel = document.querySelector("h1.turn");
 const PIECE_ICONS = {
     "white": {
-        "King": "&#9817;",
+        "King": "&#9812;",
         "Queen": "&#9813;",
         "Rook": "&#9814;",
         "Bishop": "&#9815;",
@@ -312,6 +312,8 @@ function undo(response) {
         setPiece(notation.currentPosition, currentPiece);
         setPiece(notation.targetPosition, targetPiece);
     })
+    requestCheck("white");
+    requestCheck("black");
     changeTurn(response.team);
 }
 
