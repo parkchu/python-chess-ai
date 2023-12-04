@@ -13,13 +13,14 @@ from chess.util.exceptions import PromotionSourceException
 from chess.util.exceptions import PromotionTargetException
 from .Position import Position
 from .Positions import Positions
+from .Notations import Notations
+from .Notation import Notation
 
 class Board:
 
     def __init__(self, shouldSetup=True):
         self.board = {}
         self.kingPosition = {}
-        self.turn = Team.WHITE
         self.initBoard()
         if (shouldSetup):
             self.setPieces()
@@ -33,6 +34,8 @@ class Board:
                 self.setPiece(Position(file, rank))
         self.kingPosition[Team.WHITE] = Position.new("e1")
         self.kingPosition[Team.BLACK] = Position.new("e8")
+        self.turn = Team.WHITE
+        self.notations = Notations()
 
 
     def setPieces(self):
@@ -75,12 +78,19 @@ class Board:
         if (not self.canMove(currentPosition, targetPosition)):
             raise IllegalMovementException()
         currentPiece = self.getPiece(currentPosition)
+        targetPiece = self.getPiece(targetPosition)
         self.setPiece(currentPosition)
         self.setPiece(targetPosition, currentPiece)
         if (currentPiece.isIt(King)):
             self.castling(targetPosition, currentPosition.getDistance(targetPosition))
             self.kingPosition[currentPiece.team] = targetPosition
+        notation = Notation(currentPosition, targetPosition, copy.deepcopy(currentPiece), copy.deepcopy(targetPiece))
+        self.notations.save(notation)
         currentPiece.move()
+        self.chagneTurn()
+
+
+    def chagneTurn(self):
         self.turn = self.turn.getEnemy()
             
 
@@ -260,3 +270,15 @@ class Board:
         piece = self.getPiece(currentPosition)
         distance = currentPosition.getDistance(targetPosition)
         return piece.isCastling(distance)
+    
+
+    def undo(self, team):
+        notations = self.notations.undo(team)
+
+        for notation in notations:
+            self.setPiece(notation.targetPosition, notation.targetPiece)
+            self.setPiece(notation.currentPosition, notation.currentPiece)
+        
+        self.turn = team
+
+        return notations
