@@ -6,6 +6,7 @@ from .serializers import PromoteRequestSerializer
 from .serializers import UndoRequestSerializer
 from rest_framework.parsers import JSONParser
 from home.views import board
+from home.views import ai
 from chess.board.Position import Position
 from chess.screen.Screen import Screen
 from chess.pieces.Piece import Team
@@ -87,3 +88,16 @@ def undo(request):
         Screen.showBoard(board)
         return JsonResponse(response, status=200)
     return JsonResponse(serializer.errors, status=400)
+
+
+@api_view(['GET'])
+def moveAi(request, team):
+    team = Team.get(team)
+    movePosition = ai.getMovePosition(board, team)
+    currentPosition = movePosition["currentPosition"]
+    targetPosition = movePosition["targetPosition"]
+    response = {
+        "currentPosition": currentPosition.get(),
+        "targetPosition": targetPosition.get()
+    }
+    return JsonResponse(response, status=200)

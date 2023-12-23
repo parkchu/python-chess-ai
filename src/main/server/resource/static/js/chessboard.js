@@ -1,4 +1,4 @@
-const APIURL = "https://effective-spork-wr76pqqq7vvw2g66r-8000.app.github.dev";
+const APIURL = ".";
 const board = document.querySelector("#boards tbody");
 const turnLabel = document.querySelector("h1.turn");
 const PIECE_ICONS = {
@@ -140,9 +140,20 @@ function deleteMovablePoint(piece) {
     }
 }
 
-function movePiece(targetPoint) {
-    requestMove(currentPoint.id, targetPoint.id);
+async function movePiece(targetPoint) {
+    data = await requestMove(currentPoint.id, targetPoint.id);
     move(currentPoint, targetPoint)
+    processAfterMove(data)
+    changeTurn();
+    requestMovePositionByAi(turn)
+}
+
+async function movePieceByAi(currentPosition, targetPosition) {
+    currentPoint = board.querySelector(`#${currentPosition}`);
+    targetPoint = board.querySelector(`#${targetPosition}`);
+    data = await requestMove(currentPoint.id, targetPoint.id);
+    move(currentPoint, targetPoint)
+    processAfterMove(data)
     changeTurn();
 }
 
@@ -152,16 +163,16 @@ function move(currentPoint, targetPoint) {
     removeClicked(targetPoint);
 }
 
-function requestMove(currentPosition, targetPosition) {
+async function requestMove(currentPosition, targetPosition) {
     url = `${APIURL}/api/chess/move`;
     method = "POST";
     body = JSON.stringify({
         currentPosition: currentPosition,
         targetPosition: targetPosition,
     });
-    request(url, method, body)
+    return request(url, method, body)
     .then((response) => response.json())
-    .then((data) => processAfterMove(data));
+    .then((data) => data);
 }
 
 function request(url, method, body = null) {
@@ -172,6 +183,14 @@ function request(url, method, body = null) {
         },
         body: body
     });
+}
+
+function requestMovePositionByAi(team) {
+    url = `${APIURL}/api/chess/move-ai/${team}`;
+    method = "GET";
+    request(url, method)
+    .then((response) => response.json())
+    .then((data) => movePieceByAi(data.currentPosition, data.targetPosition));
 }
 
 function processAfterMove(response) {

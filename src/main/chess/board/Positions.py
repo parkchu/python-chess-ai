@@ -1,3 +1,5 @@
+import random
+
 class Positions:
 
     def empty():
@@ -42,3 +44,9 @@ class Positions:
 
     def isEmpty(self):
         return not self.positions
+    
+
+    def getRandomPosition(self):
+        positions = self.positions.copy()
+        random.shuffle(positions)
+        return positions[0]
