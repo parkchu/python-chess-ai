@@ -223,7 +223,7 @@ function check(response) {
 
 function checkmate(response, message) {
     if (response.isCheckmate) {
-        alert(message)
+        alert(message);
     }
 }
 

@@ -4,6 +4,8 @@ class Ai:
 
     
     def getMovePosition(self, board, team):
+        if (board.isCheckmate(team)):
+            raise Exception("체크메이트 당했습니다.")
         try:
             currentPosition = self.getCurrentPosition(board, team)
             targetPosition = self.getTargetPosition(board, currentPosition)
