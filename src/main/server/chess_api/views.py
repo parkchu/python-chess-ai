@@ -93,11 +93,6 @@ def undo(request):
 @api_view(['GET'])
 def moveAi(request, team):
     team = Team.get(team)
-    movePosition = ai.getMovePosition(board, team)
-    currentPosition = movePosition["currentPosition"]
-    targetPosition = movePosition["targetPosition"]
-    response = {
-        "currentPosition": currentPosition.get(),
-        "targetPosition": targetPosition.get()
-    }
+    notation = ai.getMovePosition(board, team)
+    response = notation.toDict()
     return JsonResponse(response, status=200)

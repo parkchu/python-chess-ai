@@ -2,9 +2,10 @@ from enum import Enum
 
 class Piece:
 
-    def __init__(self, team, image):
+    def __init__(self, team, image, point):
         self.team = team
         self.image = self.setImage(image)
+        self.point = point
         self.distances = []
         self.directions = []
         self.isFirstMove = True

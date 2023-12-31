@@ -282,3 +282,30 @@ class Board:
         self.turn = team
 
         return notations
+    
+
+    def makeNotation(self, currentPosition, targetPosition):
+        currentPiece = self.getPiece(currentPosition)
+        targetPiece = self.getPiece(targetPosition)
+        notation = Notation(currentPosition, targetPosition, currentPiece, targetPiece)
+        return notation
+
+
+    def getDangerousPositions(self, team):
+        positions = Positions.empty()
+        ourPositions = self.getPositionsByTeam(team)
+        for position in ourPositions.positions:
+            if (self.isDangerousPosition(position)):
+                positions.append(position)
+        
+        return positions
+
+
+    def isDangerousPosition(self, position):
+        piece = self.getPiece(position)
+        enemyPositions = self.getPositionsByTeam(piece.getEnemy())
+        return any(self.canMove(enemyPosition, position) for enemyPosition in enemyPositions.positions)
+    
+
+    def getMostValuablePiece(self, positions):
+        test = max(positions, )

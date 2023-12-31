@@ -1,27 +1,24 @@
 class Ai:
     def __init__(self):
-        self.history = []
+        pass
 
     
     def getMovePosition(self, board, team):
         if (board.isCheckmate(team)):
             raise Exception("체크메이트 당했습니다.")
-        try:
-            currentPosition = self.getCurrentPosition(board, team)
-            targetPosition = self.getTargetPosition(board, currentPosition)
-            movePosition = {
-            "currentPosition": currentPosition,
-            "targetPosition": targetPosition
-            }
-            return movePosition
-        except:
-            return self.getMovePosition(board, team)
+        currentPosition = self.getCurrentPosition(board, team)
+        targetPosition = self.getTargetPosition(board, currentPosition)
+        notation = board.makeNotation(currentPosition, targetPosition)
+        return notation
     
 
     def getCurrentPosition(self, board, team):
-        positions = board.getPositionsByTeam(team)
-        return positions.getRandomPosition()
-    
+        dangerousPositions = board.getDangerousPositions(team)
+        if dangerousPositions.isEmpty():
+            return board.getPositionsByTeam(team).getRandomPosition()
+        position = max(dangerousPositions.positions, key=lambda position:board.getPiece(position).point)
+        return position
+
 
     def getTargetPosition(self, board, currentPosition):
         movablePositions = board.getMovablePositions(currentPosition)

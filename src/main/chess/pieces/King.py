@@ -2,7 +2,7 @@ from .Piece import Piece
 
 class King(Piece):
     def __init__(self, team):
-        super().__init__(team, "k")
+        super().__init__(team, "k", 10)
         self.distances=[(-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0)]
 
     
